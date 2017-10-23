@@ -115,12 +115,12 @@ int main() {
   }
 
   {
-    std::cout << std::endl << "Query4: simple project of equi-join" << std::endl;
+    std::cout << std::endl << "Query4: simple project of equi-join with predicate" << std::endl;
     BaseTable bt1 = BaseTable("table1");
     BaseTable bt2 = BaseTable("table2");
     std::cout << bt1;
     std::cout << bt2;
-    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {}));
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {Predicate(PT_GREATERTHAN, VT_INT, 2, 30, "")}));
     std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
     std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666));
     std::unique_ptr<LProjectNode> n4(new LProjectNode(std::move(n3), {"table2.type2", "table1.description"}));

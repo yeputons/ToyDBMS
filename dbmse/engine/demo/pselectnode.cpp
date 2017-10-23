@@ -41,6 +41,7 @@ PSelectNode::PSelectNode(LAbstractNode* p, std::vector<Predicate> predicate): PG
 void PSelectNode::Initialize() {
   int val = 0;
   std::string line, word;
+  LSelectNode* p = (LSelectNode*)prototype;
   std::ifstream f(table.relpath);
   if (f.is_open()) {
     // skipping first 4 lines
@@ -63,7 +64,18 @@ void PSelectNode::Initialize() {
         tmp.push_back(h);
         i++;
       }
-      data.push_back(tmp);
+      p->ResetIterator();
+      bool to_select = true;
+      for (;;) {
+        int stop;
+        Predicate pred;
+        std::tie(stop, pred) = p->GetNextPredicate();
+        if (stop) break;
+        to_select &= pred.check(tmp[pred.attribute]);
+      }
+      if (to_select) {
+        data.push_back(tmp);
+      }
     }
     f.close();
   } else std::cout << "Unable to open file";
