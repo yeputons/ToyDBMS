@@ -106,7 +106,7 @@ int main() {
   }
 
   {
-    std::cout << std::endl << "Query3: simple cross-join" << std::endl;
+    std::cout << std::endl << "Query3: simple cross-product" << std::endl;
     BaseTable bt1 = BaseTable("table1");
     BaseTable bt2 = BaseTable("table2");
     std::cout << bt1;

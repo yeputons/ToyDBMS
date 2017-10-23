@@ -7,7 +7,6 @@
 
 PUniqueNode::PUniqueNode(std::unique_ptr<PGetNextNode> child_, LAbstractNode* p)
   : PGetNextNode(std::move(child_), nullptr, p) {
-  LUniqueNode* pn = (LUniqueNode*)p;
   Initialize();
 }
 
