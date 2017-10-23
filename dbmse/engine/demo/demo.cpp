@@ -27,6 +27,7 @@
 #include "../interface/interface.h"
 #include "../interface/basics.h"
 #include "pselectnode.h"
+#include "pcrossproductnode.h"
 #include "pjoinnode.h"
 
 std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
@@ -36,6 +37,11 @@ std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
     return std::unique_ptr<PSelectNode>(new PSelectNode(tmp, p));
   } else if (dynamic_cast<LJoinNode*>(node) != nullptr) {
     return std::unique_ptr<PJoinNode>(new PJoinNode(
+    	QueryFactory(node->GetLeft()),
+    	QueryFactory(node->GetRight()),
+    	node));
+  } else if (dynamic_cast<LCrossProductNode*>(node) != nullptr) {
+    return std::unique_ptr<PCrossProductNode>(new PCrossProductNode(
     	QueryFactory(node->GetLeft()),
     	QueryFactory(node->GetRight()),
     	node));
@@ -89,4 +95,17 @@ int main() {
     ExecuteQuery(q1.get());
   }
 
+  {
+    std::cout << std::endl << "Query3: simple cross-join" << std::endl;
+    BaseTable bt1 = BaseTable("table1");
+    BaseTable bt2 = BaseTable("table2");
+    std::cout << bt1;
+    std::cout << bt2;
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {}));
+    std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
+    std::unique_ptr<LCrossProductNode> n3(new LCrossProductNode(std::move(n1), std::move(n2)));
+    std::unique_ptr<PResultNode> q1 = QueryFactory(n3.get());
+    q1->Print(0);
+    ExecuteQuery(q1.get());
+  }
 }

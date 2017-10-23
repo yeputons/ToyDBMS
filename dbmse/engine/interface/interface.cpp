@@ -39,6 +39,18 @@ LAbstractNode* LAbstractNode::GetRight() {
   return right.get();
 }
 
+LCrossProductNode::LCrossProductNode(std::unique_ptr<LAbstractNode> left_, std::unique_ptr<LAbstractNode> right_) 
+  : LAbstractNode(std::move(left_), std::move(right_)) {
+  fieldNames = left->fieldNames;
+  fieldTypes = left->fieldTypes;
+  fieldOrders = left->fieldOrders;
+  for (int i = 0; i < right->fieldNames.size(); i++) {
+    fieldNames.push_back(right->fieldNames[i]);
+    fieldTypes.push_back(right->fieldTypes[i]);
+    fieldOrders.push_back(CS_UNKNOWN);
+  }
+}
+
 LJoinNode::LJoinNode(std::unique_ptr<LAbstractNode> left_, std::unique_ptr<LAbstractNode> right_,
                      std::string offset1, std::string offset2, int memorylimit)
   : LAbstractNode(std::move(left_), std::move(right_)) {
