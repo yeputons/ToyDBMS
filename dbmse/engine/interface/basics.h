@@ -70,6 +70,11 @@ struct Value {
   }
   ~Value() {
   }
+  bool operator==(const Value &rhs) const {
+    if (vtype != rhs.vtype) return false;
+    if (vtype == VT_INT) return vint == rhs.vint;
+    if (vtype == VT_STRING) return vstr == rhs.vstr;
+  }
 };
 
 enum PredicateType {
