@@ -30,6 +30,7 @@
 #include "pcrossproductnode.h"
 #include "pjoinnode.h"
 #include "pprojectnode.h"
+#include "puniquenode.h"
 
 std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
   if (dynamic_cast<LSelectNode*>(node) != nullptr) {
@@ -48,6 +49,10 @@ std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
     	node));
   } else if (dynamic_cast<LProjectNode*>(node) != nullptr) {
     return std::unique_ptr<PProjectNode>(new PProjectNode(
+        QueryFactory(node->GetLeft()),
+        node));
+  } else if (dynamic_cast<LUniqueNode*>(node) != nullptr) {
+    return std::unique_ptr<PUniqueNode>(new PUniqueNode(
         QueryFactory(node->GetLeft()),
         node));
   } else
@@ -115,7 +120,7 @@ int main() {
   }
 
   {
-    std::cout << std::endl << "Query4: simple project of equi-join with predicate" << std::endl;
+    std::cout << std::endl << "Query4: simple project of equi-join with predicate and unique" << std::endl;
     BaseTable bt1 = BaseTable("table1");
     BaseTable bt2 = BaseTable("table2");
     std::cout << bt1;
@@ -124,7 +129,8 @@ int main() {
     std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
     std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666));
     std::unique_ptr<LProjectNode> n4(new LProjectNode(std::move(n3), {"table2.type2", "table1.description"}));
-    std::unique_ptr<PResultNode> q1 = QueryFactory(n4.get());
+    std::unique_ptr<LUniqueNode> n5(new LUniqueNode(std::move(n4)));
+    std::unique_ptr<PResultNode> q1 = QueryFactory(n5.get());
     q1->Print(0);
     ExecuteQuery(q1.get());
   }

@@ -161,6 +161,9 @@ void LSelectNode::ResetIterator() {
 
 
 LUniqueNode::LUniqueNode(std::unique_ptr<LAbstractNode> child_): LAbstractNode(std::move(child_), nullptr) {
+  fieldNames = left->fieldNames;
+  fieldTypes = left->fieldTypes;
+  fieldOrders = left->fieldOrders;
 }
 
 
