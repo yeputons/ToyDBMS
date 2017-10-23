@@ -29,30 +29,18 @@
 #include "pselectnode.h"
 #include "pjoinnode.h"
 
-// Here be rewriter and optimizer
-std::unique_ptr<PResultNode> QueryFactory(LAbstractNode* node) {
-  // As of now, we handle only SELECTs with 0 predicates
-  // Implementing conjunctive predicates is your homework
+std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
   if (dynamic_cast<LSelectNode*>(node) != nullptr) {
     LSelectNode* tmp = (LSelectNode*)node;
     std::vector<Predicate> p;
-    return std::unique_ptr<PResultNode>(new PSelectNode(tmp, p));
+    return std::unique_ptr<PSelectNode>(new PSelectNode(tmp, p));
+  } else if (dynamic_cast<LJoinNode*>(node) != nullptr) {
+    return std::unique_ptr<PJoinNode>(new PJoinNode(
+    	QueryFactory(node->GetLeft()),
+    	QueryFactory(node->GetRight()),
+    	node));
   } else
-    // Also, only one join is possible
-    // Supporting more joins is also your (future) homework
-    if (dynamic_cast<LJoinNode*>(node) != nullptr) {
-
-      LSelectNode* tmp = (LSelectNode*)(node->GetRight());
-      std::vector<Predicate> p;
-      std::unique_ptr<PSelectNode> rres(new PSelectNode(tmp, p));
-
-      LSelectNode* tmp2 = (LSelectNode*)(node->GetLeft());
-      std::unique_ptr<PSelectNode> lres(new PSelectNode(tmp2, p));
-
-      return std::unique_ptr<PResultNode>(std::unique_ptr<PJoinNode>(new PJoinNode(std::move(lres), std::move(rres), node)));
-    } else
-      return nullptr;
-
+    return nullptr;
 }
 
 void ExecuteQuery(PResultNode* query) {
