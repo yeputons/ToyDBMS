@@ -122,6 +122,7 @@ LProjectNode::LProjectNode(std::unique_ptr<LAbstractNode> child_, std::vector<st
         fieldNames.push_back(source);
         fieldTypes.push_back(left->fieldTypes[i]);
         fieldOrders.push_back(left->fieldOrders[i]);
+        offsets.push_back(source[0]);
         continue;
       }
     }
