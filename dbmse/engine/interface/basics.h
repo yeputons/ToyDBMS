@@ -20,6 +20,7 @@
 #ifndef BASICS_H
 #define BASICS_H
 
+#include <assert.h>
 #include <string.h>
 #include <vector>
 #include <string>
@@ -95,6 +96,16 @@ struct Predicate {
     this->attribute = p.attribute;
     this->vint = p.vint;
     this->vstr = p.vstr;
+  }
+  bool check(const Value &v) {
+    assert(vtype == v.vtype);
+    if (ptype == PT_EQUALS) {
+      if (vtype == VT_INT) return v.vint == vint;
+      if (vtype == VT_STRING) return v.vstr == vstr;
+    } else if (ptype == PT_GREATERTHAN) {
+      if (vtype == VT_INT) return v.vint >= vint;
+      if (vtype == VT_STRING) return v.vstr >= vstr;
+    }
   }
   Predicate() {}
   ~Predicate() {}
