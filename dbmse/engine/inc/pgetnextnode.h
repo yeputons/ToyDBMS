@@ -32,8 +32,7 @@ class PGetNextNode : public PResultNode {
     virtual std::vector<std::vector<Value>> GetNext() = 0;
     // get number of attributes
     int GetAttrNum() override;
-  protected:
-    static const int BLOCK_SIZE;
+    static int BLOCK_SIZE;
 };
 
 #endif // PGETNEXTNODE_H

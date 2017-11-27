@@ -104,7 +104,10 @@ void ExecuteQuery(PGetNextNode* query) {
   }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+  if (argc >= 2) {
+    PGetNextNode::BLOCK_SIZE = atoi(argv[1]);
+  }
   {
     std::cout << "Starting demo" << std::endl;
     std::cout << "Query1: plain select" << std::endl;
