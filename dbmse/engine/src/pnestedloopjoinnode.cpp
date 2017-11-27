@@ -62,18 +62,26 @@ PNestedLoopJoinNode::PNestedLoopJoinNode(std::unique_ptr<PGetNextNode> left_, st
   Rewind();
 }
 
-std::vector<std::vector<Value>> PNestedLoopJoinNode::GetNext() {
-  auto result = std::move(data);
-  data.clear();
-  return result;
-}
-
 void PNestedLoopJoinNode::Rewind() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
-  std::vector<std::vector<Value>> lres = l->GetNext();
-  std::vector<std::vector<Value>> rres = r->GetNext();
-  for (int i = 0; i < lres.size(); i++)
+  l->Rewind();
+  r->Rewind();
+  lres = l->GetNext();
+}
+
+std::vector<std::vector<Value>> PNestedLoopJoinNode::GetNext() {
+  PGetNextNode* l = (PGetNextNode*)left.get();
+  PGetNextNode* r = (PGetNextNode*)right.get();
+  std::vector<std::vector<Value>> data;
+  while (!lres.empty() && data.size() < BLOCK_SIZE) {
+    std::vector<std::vector<Value>> rres = r->GetNext();
+    if (rres.empty()) {
+      lres = l->GetNext();
+      r->Rewind();
+      continue;
+    }
+    for (int i = 0; i < lres.size(); i++)
     for (int j = 0; j < rres.size(); j++) {
       bool join = false;
       if (vt == VT_INT) {
@@ -102,7 +110,8 @@ void PNestedLoopJoinNode::Rewind() {
 
       data.push_back(tmp);
     }
-
+  }
+  return data;
 }
 
 void PNestedLoopJoinNode::Print(int indent) {
