@@ -99,12 +99,12 @@ class PResultNode {
     virtual int GetAttrNum() = 0;
     // prints tree
     virtual void Print(int indent) = 0;
-    // used to get attribute info
-    LAbstractNode* prototype;
   protected:
     std::unique_ptr<PResultNode> left;
     std::unique_ptr<PResultNode> right;
-    int pos;
+  public:
+    // used to get attribute info
+    LAbstractNode* prototype;
 };
 
 #endif // INTERFACE_H

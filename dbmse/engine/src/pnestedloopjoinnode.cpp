@@ -33,8 +33,6 @@ PNestedLoopJoinNode::PNestedLoopJoinNode(std::unique_ptr<PGetNextNode> left_, st
   std::vector<std::vector<std::string>> ln = lp->fieldNames;
   std::vector<std::vector<std::string>> rn = rp->fieldNames;
 
-  LAbstractNode* p = prototype;
-
   for (int i = 0; i < lp->fieldNames.size(); i++) {
     if (std::find(ln[i].begin(), ln[i].end(), ((LJoinNode*)prototype)->offset1) != ln[i].end()) {
       lpos = i;

@@ -74,6 +74,8 @@ struct Value {
     if (vtype != rhs.vtype) return false;
     if (vtype == VT_INT) return vint == rhs.vint;
     if (vtype == VT_STRING) return vstr == rhs.vstr;
+    assert(false);
+    return false;
   }
 };
 
@@ -111,6 +113,8 @@ struct Predicate {
       if (vtype == VT_INT) return v.vint >= vint;
       if (vtype == VT_STRING) return v.vstr >= vstr;
     }
+    assert(false);
+    return false;
   }
   Predicate() {}
   ~Predicate() {}

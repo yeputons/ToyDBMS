@@ -171,7 +171,6 @@ LUniqueNode::LUniqueNode(std::unique_ptr<LAbstractNode> child_): LAbstractNode(s
 
 PResultNode::PResultNode(std::unique_ptr<PResultNode> left_, std::unique_ptr<PResultNode> right_, LAbstractNode* p)
   : left(std::move(left_)), right(std::move(right_)), prototype(p) {
-  pos = 0;
 }
 
 PResultNode::~PResultNode() {
