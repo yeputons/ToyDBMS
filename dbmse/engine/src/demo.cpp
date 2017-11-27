@@ -24,8 +24,8 @@
 #include <utility>
 #include <vector>
 #include <tuple>
-#include "../interface/interface.h"
-#include "../interface/basics.h"
+#include "interface.h"
+#include "basics.h"
 #include "pselectnode.h"
 #include "pcrossproductnode.h"
 #include "pjoinnode.h"

@@ -17,25 +17,23 @@
 //      3) contract contains print methods for physical and logical nodes
 // 0.2: first public release
 
-#ifndef PSELECTNODE_H
-#define PSELECTNODE_H
+#ifndef PJOINNODE_H
+#define PJOINNODE_H
 
 #include <vector>
-#include "../interface/interface.h"
+#include <memory>
+#include "interface.h"
 #include "pgetnextnode.h"
 
-class PSelectNode : public PGetNextNode {
+class PJoinNode : public PGetNextNode {
   public:
-    PSelectNode();
-    PSelectNode(LAbstractNode* p, std::vector<Predicate> predicates);
+    PJoinNode(std::unique_ptr<PGetNextNode> left, std::unique_ptr<PGetNextNode> right, LAbstractNode* p);
     std::vector<std::vector<Value>> GetNext() override;
-    // print node
+    void Initialize();
     void Print(int indent) override;
   private:
-    std::ifstream f;
-    BaseTable table;
-    std::vector<Predicate> predicate;
     int pos;
+    std::vector<std::vector<Value>> data;
 };
 
-#endif // PSELECTNODE_H
+#endif // PJOINNODE_H

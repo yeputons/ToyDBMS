@@ -21,7 +21,7 @@
 #define PGETNEXTNODE_H
 #include <vector>
 #include <memory>
-#include "../interface/interface.h"
+#include "interface.h"
 
 class PGetNextNode : public PResultNode {
   public:
