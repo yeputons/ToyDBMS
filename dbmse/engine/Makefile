@@ -12,7 +12,7 @@ all: $(TARGETS)
 demo: $(SRCS_demo:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
 CXX=g++
-CXXFLAGS=-pedantic -std=c++11 -I$(INCDIR)
+CXXFLAGS=-pedantic -std=c++11 -g -O0 -I$(INCDIR)
 LDFLAGS=
 LDLIBS=
 
