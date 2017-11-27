@@ -170,6 +170,10 @@ LSortNode::LSortNode(std::unique_ptr<LAbstractNode> child_): LAbstractNode(std::
   fieldNames = left->fieldNames;
   fieldTypes = left->fieldTypes;
   fieldOrders = left->fieldOrders;
+  fieldOrders[0] = CS_ASCENDING;
+  for (int i = 1; i < fieldOrders.size(); i++) {
+    fieldOrders[i] = CS_UNKNOWN;
+  }
 }
 
 /* Physical nodes*/
