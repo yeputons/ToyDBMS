@@ -198,11 +198,4 @@ inline std::ostream& operator<<(std::ostream& stream, const BaseTable& bt) {
   return stream;
 }
 
-
-enum ErrCode {
-  EC_OK,
-  EC_FINISH,
-  EC_ERROR
-};
-
 #endif // BASICS_H

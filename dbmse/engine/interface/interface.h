@@ -101,12 +101,9 @@ class PResultNode {
     virtual void Print(int indent) = 0;
     // used to get attribute info
     LAbstractNode* prototype;
-    // returns error status and data, if possible
-    virtual std::tuple<ErrCode, std::vector<Value>> GetRecord();
   protected:
     std::unique_ptr<PResultNode> left;
     std::unique_ptr<PResultNode> right;
-    std::vector<std::vector<Value>> data;
     int pos;
 };
 

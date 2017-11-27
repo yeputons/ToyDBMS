@@ -59,24 +59,20 @@ std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
     return nullptr;
 }
 
-void ExecuteQuery(PResultNode* query) {
-  std::tuple<ErrCode, std::vector<Value>> res;
-  res = query->GetRecord();
-  ErrCode ec = std::get<0>(res);
-  std::vector<Value> vals = std::get<1>(res);
-  while (ec == EC_OK) {
-    for (int i = 0; i < query->GetAttrNum(); i++) {
-      if (vals[i].vtype == VT_INT)
-        std::cout << vals[i].vint << " ";
-      else if (vals[i].vtype == VT_STRING)
-        std::cout << vals[i].vstr << " ";
+void ExecuteQuery(PGetNextNode* query) {
+  std::vector<std::vector<Value>> res = query->GetNext();
+  while (!res.empty()) {
+    for (const auto &vals : res) {
+      for (int i = 0; i < query->GetAttrNum(); i++) {
+        if (vals[i].vtype == VT_INT)
+          std::cout << vals[i].vint << " ";
+        else if (vals[i].vtype == VT_STRING)
+          std::cout << vals[i].vstr << " ";
+      }
+      printf("\n");
     }
-    printf("\n");
-    res = query->GetRecord();
-    ec = std::get<0>(res);
-    vals = std::get<1>(res);
+    res = query->GetNext();
   }
-
 }
 
 int main() {
@@ -86,7 +82,7 @@ int main() {
     BaseTable bt1 = BaseTable("table1");
     std::cout << bt1;
     std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {}));
-    std::unique_ptr<PResultNode> q1 = QueryFactory(n1.get());
+    std::unique_ptr<PGetNextNode> q1 = QueryFactory(n1.get());
     q1->Print(0);
     ExecuteQuery(q1.get());
   }
@@ -100,7 +96,7 @@ int main() {
     std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {}));
     std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
     std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666));
-    std::unique_ptr<PResultNode> q1 = QueryFactory(n3.get());
+    std::unique_ptr<PGetNextNode> q1 = QueryFactory(n3.get());
     q1->Print(0);
     ExecuteQuery(q1.get());
   }
@@ -114,7 +110,7 @@ int main() {
     std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {}));
     std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
     std::unique_ptr<LCrossProductNode> n3(new LCrossProductNode(std::move(n1), std::move(n2)));
-    std::unique_ptr<PResultNode> q1 = QueryFactory(n3.get());
+    std::unique_ptr<PGetNextNode> q1 = QueryFactory(n3.get());
     q1->Print(0);
     ExecuteQuery(q1.get());
   }
@@ -130,7 +126,7 @@ int main() {
     std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666));
     std::unique_ptr<LProjectNode> n4(new LProjectNode(std::move(n3), {"table2.type2", "table1.description"}));
     std::unique_ptr<LUniqueNode> n5(new LUniqueNode(std::move(n4)));
-    std::unique_ptr<PResultNode> q1 = QueryFactory(n5.get());
+    std::unique_ptr<PGetNextNode> q1 = QueryFactory(n5.get());
     q1->Print(0);
     ExecuteQuery(q1.get());
   }

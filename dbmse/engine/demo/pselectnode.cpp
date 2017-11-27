@@ -82,7 +82,9 @@ void PSelectNode::Initialize() {
 }
 
 std::vector<std::vector<Value>> PSelectNode::GetNext() {
-  return data;
+  auto result = std::move(data);
+  data.clear();
+  return result;
 }
 
 void PSelectNode::Print(int indent) {

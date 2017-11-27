@@ -30,7 +30,9 @@ PJoinNode::PJoinNode(std::unique_ptr<PGetNextNode> left_, std::unique_ptr<PGetNe
 }
 
 std::vector<std::vector<Value>> PJoinNode::GetNext() {
-  return data;
+  auto result = std::move(data);
+  data.clear();
+  return result;
 }
 
 void PJoinNode::Initialize() {

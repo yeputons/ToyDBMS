@@ -28,15 +28,13 @@ class PGetNextNode : public PResultNode {
     PGetNextNode();
     PGetNextNode(std::unique_ptr<PResultNode> left, std::unique_ptr<PResultNode> right, LAbstractNode* p);
     // internal way to transfer data
-    virtual std::vector<std::vector<Value>> GetNext();
+    virtual std::vector<std::vector<Value>> GetNext() = 0;
     // getting access to data
     virtual void Initialize();
     // get number of attributes
     int GetAttrNum() override;
   protected:
-
-  private:
-
+    std::vector<std::vector<Value>> data;
 };
 
 #endif // PGETNEXTNODE_H

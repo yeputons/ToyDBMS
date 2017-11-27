@@ -35,10 +35,6 @@ void PGetNextNode::Initialize() {
   return;
 }
 
-std::vector<std::vector<Value>> PGetNextNode::GetNext() {
-  return std::vector<std::vector<Value>>();
-}
-
 int PGetNextNode::GetAttrNum() {
   return prototype->fieldNames.size();
 }

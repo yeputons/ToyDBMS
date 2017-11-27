@@ -11,7 +11,9 @@ PCrossProductNode::PCrossProductNode(std::unique_ptr<PGetNextNode> left_, std::u
 }
 
 std::vector<std::vector<Value>> PCrossProductNode::GetNext() {
-  return data;
+  auto result = std::move(data);
+  data.clear();
+  return result;
 }
 
 void PCrossProductNode::Initialize() {

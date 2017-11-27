@@ -176,13 +176,3 @@ PResultNode::PResultNode(std::unique_ptr<PResultNode> left_, std::unique_ptr<PRe
 
 PResultNode::~PResultNode() {
 }
-
-std::tuple<ErrCode, std::vector<Value>> PResultNode::GetRecord() {
-  std::vector<Value> vals;
-  if (pos == data.size()) return std::make_tuple(EC_FINISH, vals);
-  for (int i = 0; i < GetAttrNum(); i++) {
-    vals.push_back(data[pos][i]);
-  }
-  pos++;
-  return std::make_tuple(EC_OK, vals);
-}

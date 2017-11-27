@@ -22,7 +22,9 @@ PProjectNode::PProjectNode(std::unique_ptr<PGetNextNode> child_, LAbstractNode* 
 }
 
 std::vector<std::vector<Value>> PProjectNode::GetNext() {
-  return data;
+  auto result = std::move(data);
+  data.clear();
+  return result;
 }
 
 void PProjectNode::Initialize() {

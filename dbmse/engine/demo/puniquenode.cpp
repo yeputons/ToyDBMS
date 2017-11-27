@@ -11,7 +11,9 @@ PUniqueNode::PUniqueNode(std::unique_ptr<PGetNextNode> child_, LAbstractNode* p)
 }
 
 std::vector<std::vector<Value>> PUniqueNode::GetNext() {
-  return data;
+  auto result = std::move(data);
+  data.clear();
+  return result;
 }
 
 void PUniqueNode::Initialize() {
