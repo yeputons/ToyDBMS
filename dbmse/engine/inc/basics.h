@@ -27,6 +27,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <utility>
 
 
 const int MAXLEN = 1000;
@@ -85,6 +86,23 @@ struct Value {
     return false;
   }
 };
+
+namespace std {
+  template <>
+  struct hash<Value> {
+    std::size_t operator()(const Value& v) const {
+      using std::hash;
+      if (v.vtype == VT_INT) {
+        return hash<int>()(v.vint);
+      } else if (v.vtype == VT_STRING) {
+        return hash<string>()(v.vstr);
+      } else {
+        assert(false);
+        return 0;
+      }
+    }
+  };
+}
 
 enum PredicateType {
   PT_EQUALS,
