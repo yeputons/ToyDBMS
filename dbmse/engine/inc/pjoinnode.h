@@ -25,9 +25,9 @@
 #include "interface.h"
 #include "pgetnextnode.h"
 
-class PJoinNode : public PGetNextNode {
+class PNestedLoopJoinNode : public PGetNextNode {
   public:
-    PJoinNode(std::unique_ptr<PGetNextNode> left, std::unique_ptr<PGetNextNode> right, LAbstractNode* p);
+    PNestedLoopJoinNode(std::unique_ptr<PGetNextNode> left, std::unique_ptr<PGetNextNode> right, LAbstractNode* p);
     std::vector<std::vector<Value>> GetNext() override;
     void Rewind() override;
     void Print(int indent) override;

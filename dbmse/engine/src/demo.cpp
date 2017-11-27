@@ -38,7 +38,7 @@ std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
     std::vector<Predicate> p;
     return std::unique_ptr<PSelectNode>(new PSelectNode(tmp, p));
   } else if (dynamic_cast<LJoinNode*>(node) != nullptr) {
-    return std::unique_ptr<PJoinNode>(new PJoinNode(
+    return std::unique_ptr<PNestedLoopJoinNode>(new PNestedLoopJoinNode(
     	QueryFactory(node->GetLeft()),
     	QueryFactory(node->GetRight()),
     	node));

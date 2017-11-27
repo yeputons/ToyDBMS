@@ -23,19 +23,19 @@
 
 #include "pjoinnode.h"
 
-PJoinNode::PJoinNode(std::unique_ptr<PGetNextNode> left_, std::unique_ptr<PGetNextNode> right_,
+PNestedLoopJoinNode::PNestedLoopJoinNode(std::unique_ptr<PGetNextNode> left_, std::unique_ptr<PGetNextNode> right_,
                      LAbstractNode* p): PGetNextNode(std::move(left_), std::move(right_), p) {
   pos = 0;
   Rewind();
 }
 
-std::vector<std::vector<Value>> PJoinNode::GetNext() {
+std::vector<std::vector<Value>> PNestedLoopJoinNode::GetNext() {
   auto result = std::move(data);
   data.clear();
   return result;
 }
 
-void PJoinNode::Rewind() {
+void PNestedLoopJoinNode::Rewind() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   LAbstractNode* lp = l->prototype;
@@ -104,7 +104,7 @@ void PJoinNode::Rewind() {
 
 }
 
-void PJoinNode::Print(int indent) {
+void PNestedLoopJoinNode::Print(int indent) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
