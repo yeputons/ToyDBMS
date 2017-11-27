@@ -23,16 +23,10 @@
 #include "pgetnextnode.h"
 
 PGetNextNode::PGetNextNode(): PResultNode(nullptr, nullptr, nullptr) {
-  Initialize();
 }
 
 PGetNextNode::PGetNextNode(std::unique_ptr<PResultNode> left_, std::unique_ptr<PResultNode> right_, LAbstractNode* source)
   : PResultNode(std::move(left_), std::move(right_), source) {
-  Initialize();
-}
-
-void PGetNextNode::Initialize() {
-  return;
 }
 
 int PGetNextNode::GetAttrNum() {

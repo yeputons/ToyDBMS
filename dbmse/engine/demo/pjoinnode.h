@@ -29,7 +29,7 @@ class PJoinNode : public PGetNextNode {
   public:
     PJoinNode(std::unique_ptr<PGetNextNode> left, std::unique_ptr<PGetNextNode> right, LAbstractNode* p);
     std::vector<std::vector<Value>> GetNext() override;
-    void Initialize() override;
+    void Initialize();
     void Print(int indent) override;
   private:
     int pos;
