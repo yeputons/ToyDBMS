@@ -55,8 +55,6 @@ PHashJoinNode::PHashJoinNode(std::unique_ptr<PGetNextNode> left_, std::unique_pt
   }
 
   vt = lp->fieldTypes[lpos];
-
-  Rewind();
 }
 
 void PHashJoinNode::Rewind() {
@@ -65,9 +63,11 @@ void PHashJoinNode::Rewind() {
   l->Rewind();
   r->Rewind();
   rhs.clear();
+  stats_.rewound++;
 }
 
 std::vector<std::vector<Value>> PHashJoinNode::GetNext() {
+  stats_.output_blocks++;
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   std::vector<std::vector<Value>> rres = r->GetNext();
@@ -98,17 +98,22 @@ std::vector<std::vector<Value>> PHashJoinNode::GetNext() {
             tmp.push_back(rrow[k]);
         tmp.push_back(lrow[lpos]);
         result.push_back(tmp);
+        stats_.output_rows++;
       }
     }
   }
   return result;
 }
 
-void PHashJoinNode::Print(int indent) {
+void PHashJoinNode::Print(int indent, bool print_stats) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
   std::cout << "SS-JOIN: " << ((LJoinNode*)prototype)->offset1 << "=" << ((LJoinNode*)prototype)->offset2 << std::endl;
-  left->Print(indent + 2);
-  right->Print(indent + 2);
+  if (print_stats) {
+    for (int i = 0; i < indent; i++) std::cout << " ";
+    std::cout << stats() << std::endl;
+  }
+  left->Print(indent + 2, print_stats);
+  right->Print(indent + 2, print_stats);
 }

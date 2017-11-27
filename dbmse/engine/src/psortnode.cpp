@@ -7,16 +7,17 @@
 
 PSortNode::PSortNode(std::unique_ptr<PGetNextNode> child_, LAbstractNode* p)
   : PGetNextNode(std::move(child_), nullptr, p) {
-  Rewind();
 }
 
 void PSortNode::Rewind() {
+  stats_.rewound++;
   PGetNextNode* l = (PGetNextNode*)left.get();
   l->Rewind();
   data.clear();
 }
 
 std::vector<std::vector<Value>> PSortNode::GetNext() {
+  stats_.output_blocks++;
   LSortNode *p = (LSortNode*)prototype;
   PGetNextNode* l = (PGetNextNode*)left.get();
   std::vector<std::vector<Value>> lres = l->GetNext();
@@ -35,14 +36,19 @@ std::vector<std::vector<Value>> PSortNode::GetNext() {
   auto mid = std::min(data.end(), data.begin() + BLOCK_SIZE);
   std::vector<std::vector<Value>> slice(data.begin(), mid);
   data.erase(mid, data.end());
+  stats_.output_rows += slice.size();
   return slice;
 }
 
-void PSortNode::Print(int indent) {
+void PSortNode::Print(int indent, bool print_stats) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
   LSortNode *p = (LSortNode*)prototype;
   std::cout << "SORT:" << p->offset << " (" << p->GetLeft()->fieldNames[p->offset][0] << ")" << std::endl;
-  left->Print(indent + 2);
+  if (print_stats) {
+    for (int i = 0; i < indent; i++) std::cout << " ";
+    std::cout << stats() << std::endl;
+  }
+  left->Print(indent + 2, print_stats);
 }

@@ -25,7 +25,6 @@
 
 PUnionNode::PUnionNode(std::unique_ptr<PGetNextNode> left_, std::unique_ptr<PGetNextNode> right_,
                      LAbstractNode* p_): PGetNextNode(std::move(left_), std::move(right_), p_) {
-  Rewind();
 }
 
 void PUnionNode::Rewind() {
@@ -33,9 +32,11 @@ void PUnionNode::Rewind() {
   PGetNextNode* r = (PGetNextNode*)right.get();
   l->Rewind();
   r->Rewind();
+  stats_.rewound++;
 }
 
 std::vector<std::vector<Value>> PUnionNode::GetNext() {
+  stats_.output_blocks++;
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   std::vector<std::vector<Value>> data;
@@ -53,14 +54,19 @@ std::vector<std::vector<Value>> PUnionNode::GetNext() {
     }
     data.insert(data.end(), rres.begin(), rres.end());
   }
+  stats_.output_rows += data.size();
   return data;
 }
 
-void PUnionNode::Print(int indent) {
+void PUnionNode::Print(int indent, bool print_stats) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
   std::cout << "UNION:" << std::endl;
-  left->Print(indent + 2);
-  right->Print(indent + 2);
+  if (print_stats) {
+    for (int i = 0; i < indent; i++) std::cout << " ";
+    std::cout << stats() << std::endl;
+  }
+  left->Print(indent + 2, print_stats);
+  right->Print(indent + 2, print_stats);
 }

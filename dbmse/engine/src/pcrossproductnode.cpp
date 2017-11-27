@@ -7,10 +7,15 @@
 
 PCrossProductNode::PCrossProductNode(std::unique_ptr<PGetNextNode> left_, std::unique_ptr<PGetNextNode> right_,
                      LAbstractNode* p): PGetNextNode(std::move(left_), std::move(right_), p) {
-  Rewind();
+  PGetNextNode* l = (PGetNextNode*)left.get();
+  PGetNextNode* r = (PGetNextNode*)right.get();
+  lres = l->GetNext();
+  rres = r->GetNext();
+  lptr = 0;
 }
 
 void PCrossProductNode::Rewind() {
+  stats_.rewound++;
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   l->Rewind();
@@ -21,6 +26,7 @@ void PCrossProductNode::Rewind() {
 }
 
 std::vector<std::vector<Value>> PCrossProductNode::GetNext() {
+  stats_.output_blocks++;
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   std::vector<std::vector<Value>> data;
@@ -32,6 +38,7 @@ std::vector<std::vector<Value>> PCrossProductNode::GetNext() {
     for (const auto &rrow : rres) {
       std::vector<Value> result = lrow;
       result.insert(result.end(), rrow.begin(), rrow.end());
+      stats_.output_rows++;
       data.push_back(result);
     }
 
@@ -52,11 +59,15 @@ std::vector<std::vector<Value>> PCrossProductNode::GetNext() {
   return data;
 }
 
-void PCrossProductNode::Print(int indent) {
+void PCrossProductNode::Print(int indent, bool print_stats) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
   std::cout << "CROSS-PRODUCT: " << std::endl;
-  left->Print(indent + 2);
-  right->Print(indent + 2);
+  if (print_stats) {
+    for (int i = 0; i < indent; i++) std::cout << " ";
+    std::cout << stats() << std::endl;
+  }
+  left->Print(indent + 2, print_stats);
+  right->Print(indent + 2, print_stats);
 }

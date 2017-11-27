@@ -10,7 +10,7 @@ class PProjectNode : public PGetNextNode {
     PProjectNode(std::unique_ptr<PGetNextNode> child, LAbstractNode* p);
     std::vector<std::vector<Value>> GetNext() override;
     void Rewind() override;
-    void Print(int indent) override;
+    void Print(int indent, bool print_stats) override;
   private:
     std::vector<int> indices;
 };

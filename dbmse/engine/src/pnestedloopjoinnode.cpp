@@ -57,10 +57,11 @@ PNestedLoopJoinNode::PNestedLoopJoinNode(std::unique_ptr<PGetNextNode> left_, st
 
   vt = lp->fieldTypes[lpos];
 
-  Rewind();
+  lres = l->GetNext();
 }
 
 void PNestedLoopJoinNode::Rewind() {
+  stats_.rewound++;
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   l->Rewind();
@@ -69,6 +70,7 @@ void PNestedLoopJoinNode::Rewind() {
 }
 
 std::vector<std::vector<Value>> PNestedLoopJoinNode::GetNext() {
+  stats_.output_blocks++;
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   std::vector<std::vector<Value>> data;
@@ -107,16 +109,21 @@ std::vector<std::vector<Value>> PNestedLoopJoinNode::GetNext() {
 
 
       data.push_back(tmp);
+      stats_.output_rows++;
     }
   }
   return data;
 }
 
-void PNestedLoopJoinNode::Print(int indent) {
+void PNestedLoopJoinNode::Print(int indent, bool print_stats) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
   std::cout << "NL-JOIN: " << ((LJoinNode*)prototype)->offset1 << "=" << ((LJoinNode*)prototype)->offset2 << std::endl;
-  left->Print(indent + 2);
-  right->Print(indent + 2);
+  if (print_stats) {
+    for (int i = 0; i < indent; i++) std::cout << " ";
+    std::cout << stats() << std::endl;
+  }
+  left->Print(indent + 2, print_stats);
+  right->Print(indent + 2, print_stats);
 }

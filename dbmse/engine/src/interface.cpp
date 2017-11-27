@@ -201,6 +201,13 @@ LSortNode::LSortNode(std::unique_ptr<LAbstractNode> child_, std::string name): L
 
 /* Physical nodes*/
 
+std::ostream& operator<<(std::ostream &stream, const PStats &s) {
+  return stream << "{rewound=" << s.rewound
+                << ",output_blocks=" << s.output_blocks
+                << ",output_rows=" << s.output_rows
+                << "}";
+}
+
 PResultNode::PResultNode(std::unique_ptr<PResultNode> left_, std::unique_ptr<PResultNode> right_, LAbstractNode* p)
   : left(std::move(left_)), right(std::move(right_)), prototype(p) {
 }

@@ -18,16 +18,17 @@ PProjectNode::PProjectNode(std::unique_ptr<PGetNextNode> child_, LAbstractNode* 
       }
     }
   }
-  Rewind();
 }
 
 
 void PProjectNode::Rewind() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   l->Rewind();
+  stats_.rewound++;
 }
 
 std::vector<std::vector<Value>> PProjectNode::GetNext() {
+  stats_.output_blocks++;
   PGetNextNode* l = (PGetNextNode*)left.get();
   std::vector<std::vector<Value>> data;
   std::vector<std::vector<Value>> lres = l->GetNext();
@@ -37,6 +38,7 @@ std::vector<std::vector<Value>> PProjectNode::GetNext() {
       for (int idx : indices)
         result.push_back(lrow[idx]);
       data.push_back(result);
+      stats_.output_rows++;
     }
     if (!data.empty()) {
       break;
@@ -47,7 +49,7 @@ std::vector<std::vector<Value>> PProjectNode::GetNext() {
   return data;
 }
 
-void PProjectNode::Print(int indent) {
+void PProjectNode::Print(int indent, bool print_stats) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
@@ -55,5 +57,9 @@ void PProjectNode::Print(int indent) {
   for (int idx : indices)
     std::cout << " " << idx << "(" << prototype->GetLeft()->fieldNames[idx][0] << ")";
   std::cout << std::endl;
-  left->Print(indent + 2);
+  if (print_stats) {
+    for (int i = 0; i < indent; i++) std::cout << " ";
+    std::cout << stats() << std::endl;
+  }
+  left->Print(indent + 2, print_stats);
 }

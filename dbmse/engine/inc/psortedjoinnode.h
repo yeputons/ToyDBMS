@@ -30,7 +30,7 @@ class PSortedJoinNode : public PGetNextNode {
     PSortedJoinNode(std::unique_ptr<PGetNextNode> left, std::unique_ptr<PGetNextNode> right, LAbstractNode* p);
     std::vector<std::vector<Value>> GetNext() override;
     void Rewind() override;
-    void Print(int indent) override;
+    void Print(int indent, bool print_stats) override;
   private:
     ValueType vt;
     std::vector<std::vector<Value>> lres, rres;

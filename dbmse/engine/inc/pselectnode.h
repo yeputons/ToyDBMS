@@ -31,7 +31,7 @@ class PSelectNode : public PGetNextNode {
     void Rewind() override;
     std::vector<std::vector<Value>> GetNext() override;
     // print node
-    void Print(int indent) override;
+    void Print(int indent, bool print_stats) override;
   private:
     std::ifstream f;
     BaseTable table;

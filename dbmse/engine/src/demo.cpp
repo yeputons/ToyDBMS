@@ -213,5 +213,6 @@ int main() {
     std::unique_ptr<PGetNextNode> q1 = QueryFactory(n5.get());
     q1->Print(0);
     ExecuteQuery(q1.get());
+    q1->Print(0, true);
   }
 }

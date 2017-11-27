@@ -58,10 +58,14 @@ PSortedJoinNode::PSortedJoinNode(std::unique_ptr<PGetNextNode> left_, std::uniqu
   assert(lp->fieldOrders[lpos] == CS_ASCENDING);
   assert(rp->fieldOrders[rpos] == CS_ASCENDING);
 
-  Rewind();
+  lres = l->GetNext();
+  rres = r->GetNext();
+  li = 0;
+  ri = 0;
 }
 
 void PSortedJoinNode::Rewind() {
+  stats_.rewound++;
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   l->Rewind();
@@ -74,6 +78,7 @@ void PSortedJoinNode::Rewind() {
 }
 
 std::vector<std::vector<Value>> PSortedJoinNode::GetNext() {
+  stats_.output_blocks++;
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   std::vector<std::vector<Value>> data;
@@ -102,6 +107,7 @@ std::vector<std::vector<Value>> PSortedJoinNode::GetNext() {
           tmp.push_back(rrow[k]);
       tmp.push_back(lres[li][lpos]);
       data.push_back(tmp);
+      stats_.output_rows++;
     }
     Value oldval = lres[li][lpos];
     li++;
@@ -116,11 +122,15 @@ std::vector<std::vector<Value>> PSortedJoinNode::GetNext() {
   return data;
 }
 
-void PSortedJoinNode::Print(int indent) {
+void PSortedJoinNode::Print(int indent, bool print_stats) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
   std::cout << "SS-JOIN: " << ((LJoinNode*)prototype)->offset1 << "=" << ((LJoinNode*)prototype)->offset2 << std::endl;
-  left->Print(indent + 2);
-  right->Print(indent + 2);
+  if (print_stats) {
+    for (int i = 0; i < indent; i++) std::cout << " ";
+    std::cout << stats() << std::endl;
+  }
+  left->Print(indent + 2, print_stats);
+  right->Print(indent + 2, print_stats);
 }

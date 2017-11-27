@@ -199,3 +199,13 @@ UNION:
 5 cinco 57 12 
 5 cinco-cinco 58 12 
 0 cero 100 4 
+UNION:
+{rewound=0,output_blocks=3,output_rows=16}
+  SORT:1 (table1.description)
+  {rewound=0,output_blocks=3,output_rows=0}
+    SCAN table1 with predicate NULL
+    {rewound=0,output_blocks=4,output_rows=8}
+  SORT:2 (table1.frequency)
+  {rewound=0,output_blocks=2,output_rows=0}
+    SCAN table1 with predicate NULL
+    {rewound=0,output_blocks=3,output_rows=8}

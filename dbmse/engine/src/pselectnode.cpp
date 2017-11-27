@@ -33,10 +33,12 @@ PSelectNode::PSelectNode(LAbstractNode* p, std::vector<Predicate> predicate): PG
   this->table = ((LSelectNode*)p)->GetBaseTable();
   this->predicate = predicate;
   this->prototype = p;
+  stats_.rewound--;
   Rewind();
 }
 
 void PSelectNode::Rewind() {
+  stats_.rewound++;
   f.close();
   f.open(table.relpath);
   if (f.is_open()) {
@@ -52,6 +54,7 @@ void PSelectNode::Rewind() {
 }
 
 std::vector<std::vector<Value>> PSelectNode::GetNext() {
+  stats_.output_blocks++;
   std::string line;
   LSelectNode* p = (LSelectNode*)prototype;
   std::vector<std::vector<Value>> result;
@@ -81,13 +84,14 @@ std::vector<std::vector<Value>> PSelectNode::GetNext() {
       to_select &= pred.check(tmp[pred.attribute]);
     }
     if (to_select) {
+      stats_.output_rows++;
       result.push_back(tmp);
     }
   }
   return result;
 }
 
-void PSelectNode::Print(int indent) {
+void PSelectNode::Print(int indent, bool print_stats) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
@@ -96,7 +100,11 @@ void PSelectNode::Print(int indent) {
     std::cout << predicate[0];
   else
     std::cout << "NULL" << std::endl;
-  if (left != nullptr) left->Print(indent + 2);
-  if (right != nullptr) right->Print(indent + 2);
+  if (print_stats) {
+    for (int i = 0; i < indent; i++) std::cout << " ";
+    std::cout << stats() << std::endl;
+  }
+  if (left != nullptr) left->Print(indent + 2, print_stats);
+  if (right != nullptr) right->Print(indent + 2, print_stats);
 }
 

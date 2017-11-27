@@ -106,6 +106,14 @@ class LSortNode : public LAbstractNode {
 
 // Physical node interface (result), should be used for automatic testing
 
+struct PStats {
+  int rewound = 0;
+  int output_blocks = 0;
+  int output_rows = 0;
+};
+
+std::ostream& operator<<(std::ostream&, const PStats&);
+
 class PResultNode {
   public:
     PResultNode(std::unique_ptr<PResultNode> left, std::unique_ptr<PResultNode> right, LAbstractNode* p);
@@ -113,10 +121,12 @@ class PResultNode {
     // returns number of attributes
     virtual int GetAttrNum() = 0;
     // prints tree
-    virtual void Print(int indent) = 0;
+    virtual void Print(int indent, bool print_stats = false) = 0;
+    const PStats& stats() { return stats_; }
   protected:
     std::unique_ptr<PResultNode> left;
     std::unique_ptr<PResultNode> right;
+    PStats stats_;
   public:
     // used to get attribute info
     LAbstractNode* prototype;
