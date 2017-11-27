@@ -89,6 +89,11 @@ class LUniqueNode : public LAbstractNode {
     LUniqueNode(std::unique_ptr<LAbstractNode> child);
 };
 
+class LSortNode : public LAbstractNode {
+  public:
+    LSortNode(std::unique_ptr<LAbstractNode> child);
+};
+
 // Physical node interface (result), should be used for automatic testing
 
 class PResultNode {

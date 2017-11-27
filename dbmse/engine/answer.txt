@@ -106,3 +106,15 @@ uno one
 cuatro four 
 cinco five 
 cinco-cinco five 
+
+Query5: sort of Query4
+SORT:
+  UNIQUE:
+    PROJECT: 0(table1.description) 3(table2.type2)
+      NL-JOIN: table1.id=table2.id2
+        SCAN table1 with predicate NULL
+        SCAN table2 with predicate NULL
+cinco five 
+cinco-cinco five 
+cuatro four 
+uno one 

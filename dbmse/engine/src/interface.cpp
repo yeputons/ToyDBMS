@@ -166,6 +166,11 @@ LUniqueNode::LUniqueNode(std::unique_ptr<LAbstractNode> child_): LAbstractNode(s
   fieldOrders = left->fieldOrders;
 }
 
+LSortNode::LSortNode(std::unique_ptr<LAbstractNode> child_): LAbstractNode(std::move(child_), nullptr) {
+  fieldNames = left->fieldNames;
+  fieldTypes = left->fieldTypes;
+  fieldOrders = left->fieldOrders;
+}
 
 /* Physical nodes*/
 
