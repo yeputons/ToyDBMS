@@ -33,7 +33,11 @@ PSelectNode::PSelectNode(LAbstractNode* p, std::vector<Predicate> predicate): PG
   this->table = ((LSelectNode*)p)->GetBaseTable();
   this->predicate = predicate;
   this->prototype = p;
-  pos = 0;
+  Rewind();
+}
+
+void PSelectNode::Rewind() {
+  f.close();
   f.open(table.relpath);
   if (f.is_open()) {
     std::string line;

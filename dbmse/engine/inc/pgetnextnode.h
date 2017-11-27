@@ -28,6 +28,7 @@ class PGetNextNode : public PResultNode {
     PGetNextNode();
     PGetNextNode(std::unique_ptr<PResultNode> left, std::unique_ptr<PResultNode> right, LAbstractNode* p);
     // internal way to transfer data
+    virtual void Rewind() = 0;
     virtual std::vector<std::vector<Value>> GetNext() = 0;
     // get number of attributes
     int GetAttrNum() override;

@@ -7,7 +7,7 @@ class PCrossProductNode : public PGetNextNode {
   public:
     PCrossProductNode(std::unique_ptr<PGetNextNode> left, std::unique_ptr<PGetNextNode> right, LAbstractNode* p);
     std::vector<std::vector<Value>> GetNext() override;
-    void Initialize();
+    void Rewind() override;
     void Print(int indent) override;
   private:
     std::vector<std::vector<Value>> data;

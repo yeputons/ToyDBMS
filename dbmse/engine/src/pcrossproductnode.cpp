@@ -7,7 +7,7 @@
 
 PCrossProductNode::PCrossProductNode(std::unique_ptr<PGetNextNode> left_, std::unique_ptr<PGetNextNode> right_,
                      LAbstractNode* p): PGetNextNode(std::move(left_), std::move(right_), p) {
-  Initialize();
+  Rewind();
 }
 
 std::vector<std::vector<Value>> PCrossProductNode::GetNext() {
@@ -16,7 +16,7 @@ std::vector<std::vector<Value>> PCrossProductNode::GetNext() {
   return result;
 }
 
-void PCrossProductNode::Initialize() {
+void PCrossProductNode::Rewind() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   std::vector<std::vector<Value>> lres = l->GetNext();

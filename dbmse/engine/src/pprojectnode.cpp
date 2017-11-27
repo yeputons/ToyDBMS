@@ -18,7 +18,7 @@ PProjectNode::PProjectNode(std::unique_ptr<PGetNextNode> child_, LAbstractNode* 
       }
     }
   }
-  Initialize();
+  Rewind();
 }
 
 std::vector<std::vector<Value>> PProjectNode::GetNext() {
@@ -27,7 +27,7 @@ std::vector<std::vector<Value>> PProjectNode::GetNext() {
   return result;
 }
 
-void PProjectNode::Initialize() {
+void PProjectNode::Rewind() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   std::vector<std::vector<Value>> lres = l->GetNext();
   for (const auto &lrow : lres) {

@@ -9,7 +9,7 @@ class PUniqueNode : public PGetNextNode {
   public:
     PUniqueNode(std::unique_ptr<PGetNextNode> child, LAbstractNode* p);
     std::vector<std::vector<Value>> GetNext() override;
-    void Initialize();
+    void Rewind() override;
     void Print(int indent) override;
   private:
     std::vector<std::vector<Value>> data;

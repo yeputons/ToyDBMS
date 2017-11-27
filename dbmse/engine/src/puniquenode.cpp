@@ -7,7 +7,7 @@
 
 PUniqueNode::PUniqueNode(std::unique_ptr<PGetNextNode> child_, LAbstractNode* p)
   : PGetNextNode(std::move(child_), nullptr, p) {
-  Initialize();
+  Rewind();
 }
 
 std::vector<std::vector<Value>> PUniqueNode::GetNext() {
@@ -16,7 +16,7 @@ std::vector<std::vector<Value>> PUniqueNode::GetNext() {
   return result;
 }
 
-void PUniqueNode::Initialize() {
+void PUniqueNode::Rewind() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   std::vector<std::vector<Value>> lres = l->GetNext();
   for (int i = 0; i < lres.size(); i++) {

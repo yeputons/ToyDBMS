@@ -26,7 +26,7 @@
 PJoinNode::PJoinNode(std::unique_ptr<PGetNextNode> left_, std::unique_ptr<PGetNextNode> right_,
                      LAbstractNode* p): PGetNextNode(std::move(left_), std::move(right_), p) {
   pos = 0;
-  Initialize();
+  Rewind();
 }
 
 std::vector<std::vector<Value>> PJoinNode::GetNext() {
@@ -35,7 +35,7 @@ std::vector<std::vector<Value>> PJoinNode::GetNext() {
   return result;
 }
 
-void PJoinNode::Initialize() {
+void PJoinNode::Rewind() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   LAbstractNode* lp = l->prototype;
