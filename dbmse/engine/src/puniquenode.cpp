@@ -10,24 +10,34 @@ PUniqueNode::PUniqueNode(std::unique_ptr<PGetNextNode> child_, LAbstractNode* p)
   Rewind();
 }
 
-std::vector<std::vector<Value>> PUniqueNode::GetNext() {
-  auto result = std::move(data);
-  data.clear();
-  return result;
-}
-
 void PUniqueNode::Rewind() {
   PGetNextNode* l = (PGetNextNode*)left.get();
+  l->Rewind();
+  past.clear();
+}
+
+std::vector<std::vector<Value>> PUniqueNode::GetNext() {
+  PGetNextNode* l = (PGetNextNode*)left.get();
+  std::vector<std::vector<Value>> data;
   std::vector<std::vector<Value>> lres = l->GetNext();
-  for (int i = 0; i < lres.size(); i++) {
-    bool skip = false;
-    for (int j = 0; j < i; j++) {
-      if (lres[i] == lres[j]) { skip = true; break; }
+  while (!lres.empty()) {
+    for (int i = 0; i < lres.size(); i++) {
+      bool skip = false;
+      for (int j = 0; j < past.size(); j++) {
+        if (past[j] == lres[i]) { skip = true; break; }
+      }
+      if (!skip) {
+        data.push_back(lres[i]);
+        past.push_back(lres[i]);
+      }
     }
-    if (!skip) {
-      data.push_back(lres[i]);
+    if (data.size() > BLOCK_SIZE) {
+      break;
+    } else {
+      lres = l->GetNext();
     }
   }
+  return data;
 }
 
 void PUniqueNode::Print(int indent) {
