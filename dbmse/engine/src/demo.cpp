@@ -138,7 +138,7 @@ int main() {
     }
 
     std::cout << std::endl << "Query5: sort of Query4" << std::endl;
-    std::unique_ptr<LSortNode> n6(new LSortNode(std::move(n5)));
+    std::unique_ptr<LSortNode> n6(new LSortNode(std::move(n5), "table2.type2"));
     {
       std::unique_ptr<PGetNextNode> q1 = QueryFactory(n6.get());
       q1->Print(0);

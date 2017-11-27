@@ -39,6 +39,7 @@ void PSortNode::Print(int indent) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
-  std::cout << "SORT:" << std::endl;
+  LSortNode *p = (LSortNode*)prototype;
+  std::cout << "SORT:" << p->offset << " (" << p->GetLeft()->fieldNames[p->offset][0] << ")" << std::endl;
   left->Print(indent + 2);
 }

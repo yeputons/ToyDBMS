@@ -166,7 +166,7 @@ LUniqueNode::LUniqueNode(std::unique_ptr<LAbstractNode> child_): LAbstractNode(s
   fieldOrders = left->fieldOrders;
 }
 
-LSortNode::LSortNode(std::unique_ptr<LAbstractNode> child_): LAbstractNode(std::move(child_), nullptr) {
+LSortNode::LSortNode(std::unique_ptr<LAbstractNode> child_, std::string name): LAbstractNode(std::move(child_), nullptr) {
   fieldNames = left->fieldNames;
   fieldTypes = left->fieldTypes;
   fieldOrders = left->fieldOrders;
@@ -174,6 +174,14 @@ LSortNode::LSortNode(std::unique_ptr<LAbstractNode> child_): LAbstractNode(std::
   for (int i = 1; i < fieldOrders.size(); i++) {
     fieldOrders[i] = CS_UNKNOWN;
   }
+  offset = -1;
+  for (int i = 0; i < fieldNames.size(); i++) {
+    if (std::find(fieldNames[i].begin(), fieldNames[i].end(), name) != fieldNames[i].end()) {
+      offset = i;
+      break;
+    }
+  }
+  assert(offset != -1);
 }
 
 /* Physical nodes*/

@@ -91,7 +91,8 @@ class LUniqueNode : public LAbstractNode {
 
 class LSortNode : public LAbstractNode {
   public:
-    LSortNode(std::unique_ptr<LAbstractNode> child);
+    LSortNode(std::unique_ptr<LAbstractNode> child, std::string name);
+    int offset;
 };
 
 // Physical node interface (result), should be used for automatic testing

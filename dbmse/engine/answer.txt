@@ -108,7 +108,7 @@ cinco five
 cinco-cinco five 
 
 Query5: sort of Query4
-SORT:
+SORT:1 (table2.type2)
   UNIQUE:
     PROJECT: 0(table1.description) 3(table2.type2)
       NL-JOIN: table1.id=table2.id2
