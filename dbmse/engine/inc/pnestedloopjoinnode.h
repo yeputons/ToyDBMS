@@ -17,8 +17,8 @@
 //      3) contract contains print methods for physical and logical nodes
 // 0.2: first public release
 
-#ifndef PJOINNODE_H
-#define PJOINNODE_H
+#ifndef PNESTEDLOOPJOINNODE_H
+#define PNESTEDLOOPJOINNODE_H
 
 #include <vector>
 #include <memory>
@@ -38,4 +38,4 @@ class PNestedLoopJoinNode : public PGetNextNode {
     std::vector<std::vector<Value>> lres;
 };
 
-#endif // PJOINNODE_H
+#endif // PNESTEDLOOPJOINNODE_H
