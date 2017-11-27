@@ -113,6 +113,20 @@ LJoinNode::LJoinNode(std::unique_ptr<LAbstractNode> left_, std::unique_ptr<LAbst
 
 }
 
+LUnionNode::LUnionNode(std::unique_ptr<LAbstractNode> left_, std::unique_ptr<LAbstractNode> right_) 
+  : LAbstractNode(std::move(left_), std::move(right_)) {
+  assert(left->fieldNames.size() == right->fieldNames.size());
+  assert(left->fieldTypes == right->fieldTypes);
+
+  fieldNames = left->fieldNames;
+  fieldTypes = left->fieldTypes;
+  fieldOrders = left->fieldOrders;
+  fill(fieldOrders.begin(), fieldOrders.end(), CS_UNKNOWN);
+  for (int i = 0; i < right->fieldNames.size(); i++) {
+    fieldNames[i].insert(fieldNames[i].end(), right->fieldNames[i].begin(), right->fieldNames[i].end());
+  }
+}
+
 LProjectNode::LProjectNode(std::unique_ptr<LAbstractNode> child_, std::vector<std::string> tokeep)
   : LAbstractNode(std::move(child_), nullptr) {
   for (int i = 0; i < left->fieldNames.size(); i++) {

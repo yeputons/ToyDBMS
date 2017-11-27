@@ -64,6 +64,12 @@ class LJoinNode : public LAbstractNode {
     LJoinType type;
 };
 
+class LUnionNode : public LAbstractNode {
+  public:
+    // offsets are defined as "TableName.AttributeName" so, ensure there is no duplicates
+    LUnionNode(std::unique_ptr<LAbstractNode> left, std::unique_ptr<LAbstractNode> right);
+};
+
 class LProjectNode : public LAbstractNode {
   public:
     // offsets to keep
