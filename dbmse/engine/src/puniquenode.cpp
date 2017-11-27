@@ -31,7 +31,7 @@ std::vector<std::vector<Value>> PUniqueNode::GetNext() {
         past.push_back(lres[i]);
       }
     }
-    if (data.size() > BLOCK_SIZE) {
+    if (!data.empty()) {
       break;
     } else {
       lres = l->GetNext();
