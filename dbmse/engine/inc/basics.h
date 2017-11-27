@@ -62,10 +62,10 @@ struct Value {
     vint = 0;
     vstr = "";
   }
-  operator int() const {
+  explicit operator int() const {
     return vint;
   }
-  operator std::string() const {
+  explicit operator std::string() const {
     return vstr;
   }
   ~Value() {
@@ -74,6 +74,13 @@ struct Value {
     if (vtype != rhs.vtype) return false;
     if (vtype == VT_INT) return vint == rhs.vint;
     if (vtype == VT_STRING) return vstr == rhs.vstr;
+    assert(false);
+    return false;
+  }
+  bool operator<(const Value &rhs) const {
+    if (vtype != rhs.vtype) return vtype < rhs.vtype;
+    if (vtype == VT_INT) return vint < rhs.vint;
+    if (vtype == VT_STRING) return vstr < rhs.vstr;
     assert(false);
     return false;
   }
@@ -130,6 +137,13 @@ inline std::ostream& operator<<(std::ostream& stream, const Predicate& p) {
     stream << p.vint;
   else
     stream << p.vstr;
+  return stream;
+}
+
+inline std::ostream& operator<<(std::ostream& stream, const Value& v) {
+  if (v.vtype == VT_INT) return stream << v.vint;
+  if (v.vtype == VT_STRING) return stream << '"' << v.vstr << '"';
+  assert(false);
   return stream;
 }
 
