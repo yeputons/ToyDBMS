@@ -130,7 +130,7 @@ cinco-cinco five
 cuatro four 
 uno one 
 
-Query6: same as Query4, but with sorted-join
+Query6: same as Query4, but with sorted-join and with table1.id
 located in table1 having 4 following attributes:
 0. id INT ASCENDING
 1. description STR UNKNOWN
@@ -140,17 +140,17 @@ located in table2 having 2 following attributes:
 0. id2 INT DESCENDING
 1. type2 STR UNKNOWN
 UNIQUE:
-  PROJECT: 0(table1.description) 3(table2.type2)
+  PROJECT: 0(table1.description) 3(table2.type2) 4(table1.id)
     SS-JOIN: table1.id=table2.id2
       SORT:0 (table1.id)
         SCAN table1 with predicate NULL
       SORT:0 (table2.id2)
         SCAN table2 with predicate NULL
-uno one 
-uno aone 
-cuatro four 
-cinco five 
-cinco-cinco five 
+uno one 1 
+uno aone 1 
+cuatro four 4 
+cinco five 5 
+cinco-cinco five 5 
 
 Query7: same as Query4, but with hash-join
 located in table1 having 4 following attributes:

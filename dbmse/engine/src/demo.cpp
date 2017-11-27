@@ -173,7 +173,7 @@ int main(int argc, char* argv[]) {
     }
   }
   {
-    std::cout << std::endl << "Query6: same as Query4, but with sorted-join" << std::endl;
+    std::cout << std::endl << "Query6: same as Query4, but with sorted-join and with table1.id" << std::endl;
     BaseTable bt1 = BaseTable("table1");
     BaseTable bt2 = BaseTable("table2");
     std::cout << bt1;
@@ -183,7 +183,7 @@ int main(int argc, char* argv[]) {
     std::unique_ptr<LSortNode> n3(new LSortNode(std::move(n1), "table1.id"));
     std::unique_ptr<LSortNode> n4(new LSortNode(std::move(n2), "table2.id2"));
     std::unique_ptr<LJoinNode> n5(new LJoinNode(std::move(n3), std::move(n4), "table1.id", "table2.id2", 666, LJoinType::SORTED_MERGE));
-    std::unique_ptr<LProjectNode> n6(new LProjectNode(std::move(n5), {"table2.type2", "table1.description"}));
+    std::unique_ptr<LProjectNode> n6(new LProjectNode(std::move(n5), {"table1.id", "table2.type2", "table1.description"}));
     std::unique_ptr<LUniqueNode> n7(new LUniqueNode(std::move(n6)));
     std::unique_ptr<PGetNextNode> q1 = QueryFactory(n7.get());
     q1->Print(0);
