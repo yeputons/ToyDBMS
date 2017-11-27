@@ -17,6 +17,7 @@ void PSortNode::Rewind() {
 }
 
 std::vector<std::vector<Value>> PSortNode::GetNext() {
+  LSortNode *p = (LSortNode*)prototype;
   PGetNextNode* l = (PGetNextNode*)left.get();
   std::vector<std::vector<Value>> lres = l->GetNext();
   if (!lres.empty()) {
@@ -24,7 +25,9 @@ std::vector<std::vector<Value>> PSortNode::GetNext() {
       data.insert(data.end(), lres.begin(), lres.end());
       lres = l->GetNext();
     }
-    sort(data.begin(), data.end());
+    sort(data.begin(), data.end(), [p](const std::vector<Value> &a, const std::vector<Value> &b) {
+      return a[p->offset] < b[p->offset];
+    });
   }
   auto res = data;
   data.clear();
