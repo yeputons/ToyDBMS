@@ -24,18 +24,8 @@
 #include "pnestedloopjoinnode.h"
 
 PNestedLoopJoinNode::PNestedLoopJoinNode(std::unique_ptr<PGetNextNode> left_, std::unique_ptr<PGetNextNode> right_,
-                     LAbstractNode* p): PGetNextNode(std::move(left_), std::move(right_), p) {
+                     LAbstractNode* p_): PGetNextNode(std::move(left_), std::move(right_), p_) {
   pos = 0;
-  Rewind();
-}
-
-std::vector<std::vector<Value>> PNestedLoopJoinNode::GetNext() {
-  auto result = std::move(data);
-  data.clear();
-  return result;
-}
-
-void PNestedLoopJoinNode::Rewind() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   LAbstractNode* lp = l->prototype;
@@ -43,10 +33,7 @@ void PNestedLoopJoinNode::Rewind() {
   std::vector<std::vector<std::string>> ln = lp->fieldNames;
   std::vector<std::vector<std::string>> rn = rp->fieldNames;
 
-  std::vector<std::vector<Value>> lres = l->GetNext();
-  std::vector<std::vector<Value>> rres = r->GetNext();
   LAbstractNode* p = prototype;
-  std::ptrdiff_t lpos, rpos;
 
   for (int i = 0; i < lp->fieldNames.size(); i++) {
     if (std::find(ln[i].begin(), ln[i].end(), ((LJoinNode*)prototype)->offset1) != ln[i].end()) {
@@ -70,8 +57,22 @@ void PNestedLoopJoinNode::Rewind() {
     }
   }
 
-  ValueType vt = lp->fieldTypes[lpos];
+  vt = lp->fieldTypes[lpos];
 
+  Rewind();
+}
+
+std::vector<std::vector<Value>> PNestedLoopJoinNode::GetNext() {
+  auto result = std::move(data);
+  data.clear();
+  return result;
+}
+
+void PNestedLoopJoinNode::Rewind() {
+  PGetNextNode* l = (PGetNextNode*)left.get();
+  PGetNextNode* r = (PGetNextNode*)right.get();
+  std::vector<std::vector<Value>> lres = l->GetNext();
+  std::vector<std::vector<Value>> rres = r->GetNext();
   for (int i = 0; i < lres.size(); i++)
     for (int j = 0; j < rres.size(); j++) {
       bool join = false;
@@ -84,13 +85,13 @@ void PNestedLoopJoinNode::Rewind() {
       if (join != true) continue;
 
       std::vector<Value> tmp;
-      for (int k = 0; k < ln.size(); k++) {
+      for (int k = 0; k < lres[i].size(); k++) {
         if (k != lpos) {
           tmp.push_back(lres[i][k]);
         }
       }
 
-      for (int k = 0; k < rn.size(); k++) {
+      for (int k = 0; k < rres[j].size(); k++) {
         if (k != rpos) {
           tmp.push_back(rres[j][k]);
         }

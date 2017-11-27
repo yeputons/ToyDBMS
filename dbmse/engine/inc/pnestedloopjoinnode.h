@@ -34,6 +34,8 @@ class PNestedLoopJoinNode : public PGetNextNode {
   private:
     int pos;
     std::vector<std::vector<Value>> data;
+    ValueType vt;
+    std::ptrdiff_t lpos, rpos;
 };
 
 #endif // PJOINNODE_H
