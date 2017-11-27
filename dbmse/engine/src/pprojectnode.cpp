@@ -21,21 +21,30 @@ PProjectNode::PProjectNode(std::unique_ptr<PGetNextNode> child_, LAbstractNode* 
   Rewind();
 }
 
-std::vector<std::vector<Value>> PProjectNode::GetNext() {
-  auto result = std::move(data);
-  data.clear();
-  return result;
-}
 
 void PProjectNode::Rewind() {
   PGetNextNode* l = (PGetNextNode*)left.get();
+  l->Rewind();
+}
+
+std::vector<std::vector<Value>> PProjectNode::GetNext() {
+  PGetNextNode* l = (PGetNextNode*)left.get();
+  std::vector<std::vector<Value>> data;
   std::vector<std::vector<Value>> lres = l->GetNext();
-  for (const auto &lrow : lres) {
-    std::vector<Value> result;
-    for (int idx : indices)
-      result.push_back(lrow[idx]);
-    data.push_back(result);
+  while (!lres.empty()) {
+    for (const auto &lrow : lres) {
+      std::vector<Value> result;
+      for (int idx : indices)
+        result.push_back(lrow[idx]);
+      data.push_back(result);
+    }
+    if (data.size() >= BLOCK_SIZE) {
+      break;
+    } else {
+      lres = l->GetNext();
+    }
   }
+  return data;
 }
 
 void PProjectNode::Print(int indent) {

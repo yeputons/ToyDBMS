@@ -12,7 +12,6 @@ class PProjectNode : public PGetNextNode {
     void Rewind() override;
     void Print(int indent) override;
   private:
-    std::vector<std::vector<Value>> data;
     std::vector<int> indices;
 };
 
