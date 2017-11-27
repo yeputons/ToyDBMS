@@ -202,10 +202,10 @@ UNION:
 UNION:
 {rewound=0,output_blocks=3,output_rows=16}
   SORT:1 (table1.description)
-  {rewound=0,output_blocks=3,output_rows=0}
+  {rewound=0,output_blocks=3,output_rows=8}
     SCAN table1 with predicate NULL
     {rewound=0,output_blocks=4,output_rows=8}
   SORT:2 (table1.frequency)
-  {rewound=0,output_blocks=2,output_rows=0}
+  {rewound=0,output_blocks=2,output_rows=8}
     SCAN table1 with predicate NULL
     {rewound=0,output_blocks=3,output_rows=8}

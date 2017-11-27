@@ -30,12 +30,9 @@ std::vector<std::vector<Value>> PSortNode::GetNext() {
       return a[p->offset] < b[p->offset];
     });
   }
-  auto res = data;
-  data.clear();
-  return res;
   auto mid = std::min(data.end(), data.begin() + BLOCK_SIZE);
   std::vector<std::vector<Value>> slice(data.begin(), mid);
-  data.erase(mid, data.end());
+  data.erase(data.begin(), mid);
   stats_.output_rows += slice.size();
   return slice;
 }
