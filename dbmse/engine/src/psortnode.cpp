@@ -34,6 +34,9 @@ std::vector<std::vector<Value>> PSortNode::GetNext() {
   std::vector<std::vector<Value>> slice(data.begin(), mid);
   data.erase(data.begin(), mid);
   stats_.output_rows += slice.size();
+  if (!slice.empty()) {
+    stats_.non_empty_output_blocks++;
+  }
   return slice;
 }
 

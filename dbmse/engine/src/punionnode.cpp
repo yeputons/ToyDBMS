@@ -55,6 +55,9 @@ std::vector<std::vector<Value>> PUnionNode::GetNext() {
     data.insert(data.end(), rres.begin(), rres.end());
   }
   stats_.output_rows += data.size();
+  if (!data.empty()) {
+    stats_.non_empty_output_blocks++;
+  }
   return data;
 }
 

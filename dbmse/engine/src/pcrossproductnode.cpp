@@ -56,6 +56,9 @@ std::vector<std::vector<Value>> PCrossProductNode::GetNext() {
       }
     }
   }
+  if (!data.empty()) {
+    stats_.non_empty_output_blocks++;
+  }
   return data;
 }
 

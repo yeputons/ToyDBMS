@@ -88,6 +88,9 @@ std::vector<std::vector<Value>> PSelectNode::GetNext() {
       result.push_back(tmp);
     }
   }
+  if (!result.empty()) {
+    stats_.non_empty_output_blocks++;
+  }
   return result;
 }
 

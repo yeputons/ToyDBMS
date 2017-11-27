@@ -109,6 +109,7 @@ class LSortNode : public LAbstractNode {
 struct PStats {
   int rewound = 0;
   int output_blocks = 0;
+  int non_empty_output_blocks = 0;
   int output_rows = 0;
 };
 

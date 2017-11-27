@@ -39,6 +39,9 @@ std::vector<std::vector<Value>> PUniqueNode::GetNext() {
       lres = l->GetNext();
     }
   }
+  if (!data.empty()) {
+    stats_.non_empty_output_blocks++;
+  }
   return data;
 }
 

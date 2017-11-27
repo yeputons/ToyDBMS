@@ -204,6 +204,7 @@ LSortNode::LSortNode(std::unique_ptr<LAbstractNode> child_, std::string name): L
 std::ostream& operator<<(std::ostream &stream, const PStats &s) {
   return stream << "{rewound=" << s.rewound
                 << ",output_blocks=" << s.output_blocks
+                << ",non_empty_output_blocks=" << s.non_empty_output_blocks
                 << ",output_rows=" << s.output_rows
                 << "}";
 }

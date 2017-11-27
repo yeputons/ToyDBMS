@@ -119,6 +119,9 @@ std::vector<std::vector<Value>> PSortedJoinNode::GetNext() {
       requal.clear();
     }
   }
+  if (!data.empty()) {
+    stats_.non_empty_output_blocks++;
+  }
   return data;
 }
 

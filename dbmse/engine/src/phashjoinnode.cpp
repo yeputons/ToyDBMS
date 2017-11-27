@@ -102,6 +102,9 @@ std::vector<std::vector<Value>> PHashJoinNode::GetNext() {
       }
     }
   }
+  if (!result.empty()) {
+    stats_.non_empty_output_blocks++;
+  }
   return result;
 }
 

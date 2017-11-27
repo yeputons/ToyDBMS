@@ -112,6 +112,9 @@ std::vector<std::vector<Value>> PNestedLoopJoinNode::GetNext() {
       stats_.output_rows++;
     }
   }
+  if (!data.empty()) {
+    stats_.non_empty_output_blocks++;
+  }
   return data;
 }
 
