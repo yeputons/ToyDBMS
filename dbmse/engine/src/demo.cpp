@@ -32,6 +32,7 @@
 #include "pprojectnode.h"
 #include "puniquenode.h"
 #include "psortnode.h"
+#include "psortedjoinnode.h"
 
 std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
   if (dynamic_cast<LSelectNode*>(node) != nullptr) {
@@ -39,10 +40,21 @@ std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
     std::vector<Predicate> p;
     return std::unique_ptr<PSelectNode>(new PSelectNode(tmp, p));
   } else if (dynamic_cast<LJoinNode*>(node) != nullptr) {
-    return std::unique_ptr<PNestedLoopJoinNode>(new PNestedLoopJoinNode(
-    	QueryFactory(node->GetLeft()),
-    	QueryFactory(node->GetRight()),
-    	node));
+    LJoinNode *n = dynamic_cast<LJoinNode*>(node);
+    if (n->type == LJoinType::NESTED_LOOP) {
+      return std::unique_ptr<PNestedLoopJoinNode>(new PNestedLoopJoinNode(
+        QueryFactory(node->GetLeft()),
+        QueryFactory(node->GetRight()),
+        node));
+    } else if (n->type == LJoinType::SORTED_MERGE) {
+      return std::unique_ptr<PSortedJoinNode>(new PSortedJoinNode(
+        QueryFactory(node->GetLeft()),
+        QueryFactory(node->GetRight()),
+        node));
+    } else {
+      assert(false);
+      return nullptr;
+    }
   } else if (dynamic_cast<LCrossProductNode*>(node) != nullptr) {
     return std::unique_ptr<PCrossProductNode>(new PCrossProductNode(
     	QueryFactory(node->GetLeft()),
@@ -100,7 +112,7 @@ int main() {
     std::cout << bt2;
     std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {}));
     std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
-    std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666));
+    std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666, LJoinType::NESTED_LOOP));
     std::unique_ptr<PGetNextNode> q1 = QueryFactory(n3.get());
     q1->Print(0);
     ExecuteQuery(q1.get());
@@ -128,7 +140,7 @@ int main() {
     std::cout << bt2;
     std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {Predicate(PT_GREATERTHAN, VT_INT, 2, 30, "")}));
     std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
-    std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666));
+    std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666, LJoinType::NESTED_LOOP));
     std::unique_ptr<LProjectNode> n4(new LProjectNode(std::move(n3), {"table2.type2", "table1.description"}));
     std::unique_ptr<LUniqueNode> n5(new LUniqueNode(std::move(n4)));
     {
@@ -144,5 +156,22 @@ int main() {
       q1->Print(0);
       ExecuteQuery(q1.get());
     }
+  }
+  {
+    std::cout << std::endl << "Query6: same as Query4, but with sorted-join" << std::endl;
+    BaseTable bt1 = BaseTable("table1");
+    BaseTable bt2 = BaseTable("table2");
+    std::cout << bt1;
+    std::cout << bt2;
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {Predicate(PT_GREATERTHAN, VT_INT, 2, 30, "")}));
+    std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
+    std::unique_ptr<LSortNode> n3(new LSortNode(std::move(n1), "table1.id"));
+    std::unique_ptr<LSortNode> n4(new LSortNode(std::move(n2), "table2.id2"));
+    std::unique_ptr<LJoinNode> n5(new LJoinNode(std::move(n3), std::move(n4), "table1.id", "table2.id2", 666, LJoinType::SORTED_MERGE));
+    std::unique_ptr<LProjectNode> n6(new LProjectNode(std::move(n5), {"table2.type2", "table1.description"}));
+    std::unique_ptr<LUniqueNode> n7(new LUniqueNode(std::move(n6)));
+    std::unique_ptr<PGetNextNode> q1 = QueryFactory(n7.get());
+    q1->Print(0);
+    ExecuteQuery(q1.get());
   }
 }

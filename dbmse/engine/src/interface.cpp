@@ -52,11 +52,12 @@ LCrossProductNode::LCrossProductNode(std::unique_ptr<LAbstractNode> left_, std::
 }
 
 LJoinNode::LJoinNode(std::unique_ptr<LAbstractNode> left_, std::unique_ptr<LAbstractNode> right_,
-                     std::string offset1, std::string offset2, int memorylimit)
+                     std::string offset1, std::string offset2, int memorylimit, LJoinType type)
   : LAbstractNode(std::move(left_), std::move(right_)) {
   this->offset1 = offset1;
   this->offset2 = offset2;
   this->memorylimit = memorylimit;
+  this->type = type;
 
   // TODO: disgusting, fix this
   std::vector<std::string> match;
