@@ -22,6 +22,8 @@
 
 #include "pgetnextnode.h"
 
+const int PGetNextNode::BLOCK_SIZE = 50;
+
 PGetNextNode::PGetNextNode(): PResultNode(nullptr, nullptr, nullptr) {
 }
 
