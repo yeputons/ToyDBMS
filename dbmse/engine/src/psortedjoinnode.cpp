@@ -97,7 +97,7 @@ std::vector<std::vector<Value>> PSortedJoinNode::GetNext() {
         ri = 0;
       }
     }
-    if (data.size() + requal.size() > BLOCK_SIZE) {
+    if (!data.empty() && (data.size() + requal.size() > BLOCK_SIZE)) {
       break;
     }
     for (const auto &rrow : requal) {
