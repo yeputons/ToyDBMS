@@ -28,7 +28,7 @@
 #include "basics.h"
 #include "pselectnode.h"
 #include "pcrossproductnode.h"
-#include "pjoinnode.h"
+#include "pnestedloopjoinnode.h"
 #include "pprojectnode.h"
 #include "puniquenode.h"
 
