@@ -12,6 +12,7 @@ class PProjectNode : public PGetNextNode {
     void Initialize();
     void Print(int indent) override;
   private:
+    std::vector<std::vector<Value>> data;
     std::vector<int> indices;
 };
 

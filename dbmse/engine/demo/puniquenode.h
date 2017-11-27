@@ -11,6 +11,8 @@ class PUniqueNode : public PGetNextNode {
     std::vector<std::vector<Value>> GetNext() override;
     void Initialize();
     void Print(int indent) override;
+  private:
+    std::vector<std::vector<Value>> data;
 };
 
 

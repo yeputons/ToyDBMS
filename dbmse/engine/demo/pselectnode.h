@@ -34,6 +34,7 @@ class PSelectNode : public PGetNextNode {
     void Print(int indent) override;
   private:
     BaseTable table;
+    std::vector<std::vector<Value>> data;
     std::vector<Predicate> predicate;
     int pos;
 };

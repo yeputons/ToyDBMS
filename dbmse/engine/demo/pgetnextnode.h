@@ -32,7 +32,6 @@ class PGetNextNode : public PResultNode {
     // get number of attributes
     int GetAttrNum() override;
   protected:
-    std::vector<std::vector<Value>> data;
     static const int BLOCK_SIZE = 50;
 };
 
