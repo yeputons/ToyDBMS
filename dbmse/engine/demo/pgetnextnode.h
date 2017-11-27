@@ -32,7 +32,7 @@ class PGetNextNode : public PResultNode {
     // get number of attributes
     int GetAttrNum() override;
   protected:
-    static const int BLOCK_SIZE = 50;
+    static const int BLOCK_SIZE = 1;
 };
 
 #endif // PGETNEXTNODE_H

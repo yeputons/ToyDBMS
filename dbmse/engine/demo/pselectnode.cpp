@@ -34,56 +34,52 @@ PSelectNode::PSelectNode(LAbstractNode* p, std::vector<Predicate> predicate): PG
   this->predicate = predicate;
   this->prototype = p;
   pos = 0;
-  data.clear();
-  Initialize();
-}
-
-void PSelectNode::Initialize() {
-  int val = 0;
-  std::string line, word;
-  LSelectNode* p = (LSelectNode*)prototype;
-  std::ifstream f(table.relpath);
+  f.open(table.relpath);
   if (f.is_open()) {
+    std::string line;
     // skipping first 4 lines
     getline(f, line);
     getline(f, line);
     getline(f, line);
     getline(f, line);
-
-    while (getline(f, line)) {
-      std::vector<Value> tmp;
-      std::istringstream iss(line, std::istringstream::in);
-      int i = 0;
-      while (iss >> word) {
-        // Yeah, no predicates :) -- Homework
-        Value h;
-        if (prototype->fieldTypes[i] == VT_INT)
-          h = Value(std::stoi(word));
-        else
-          h = Value(word);
-        tmp.push_back(h);
-        i++;
-      }
-      p->ResetIterator();
-      bool to_select = true;
-      for (;;) {
-        int stop;
-        Predicate pred;
-        std::tie(stop, pred) = p->GetNextPredicate();
-        if (stop) break;
-        to_select &= pred.check(tmp[pred.attribute]);
-      }
-      if (to_select) {
-        data.push_back(tmp);
-      }
-    }
-    f.close();
-  } else std::cout << "Unable to open file";
+  } else {
+    std::cout << "Unable to open file";
+  }
 }
 
 std::vector<std::vector<Value>> PSelectNode::GetNext() {
-  auto result = std::move(data);
-  data.clear();
+  std::string line;
+  LSelectNode* p = (LSelectNode*)prototype;
+  std::vector<std::vector<Value>> result;
+
+  while (result.size() < BLOCK_SIZE && getline(f, line)) {
+    std::vector<Value> tmp;
+    std::istringstream iss(line, std::istringstream::in);
+    int i = 0;
+    std::string word;
+    while (iss >> word) {
+      // Yeah, no predicates :) -- Homework
+      Value h;
+      if (prototype->fieldTypes[i] == VT_INT)
+        h = Value(std::stoi(word));
+      else
+        h = Value(word);
+      tmp.push_back(h);
+      i++;
+    }
+    p->ResetIterator();
+    bool to_select = true;
+    for (;;) {
+      int stop;
+      Predicate pred;
+      std::tie(stop, pred) = p->GetNextPredicate();
+      if (stop) break;
+      to_select &= pred.check(tmp[pred.attribute]);
+    }
+    if (to_select) {
+      result.push_back(tmp);
+    }
+  }
   return result;
 }
 
