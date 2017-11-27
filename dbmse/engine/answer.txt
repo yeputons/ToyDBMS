@@ -151,3 +151,23 @@ uno aone
 cuatro four 
 cinco five 
 cinco-cinco five 
+
+Query7: same as Query4, but with hash-join
+located in table1 having 4 following attributes:
+0. id INT ASCENDING
+1. description STR UNKNOWN
+2. frequency INT UNKNOWN
+3. groups INT UNKNOWN
+located in table2 having 2 following attributes:
+0. id2 INT DESCENDING
+1. type2 STR UNKNOWN
+UNIQUE:
+  PROJECT: 0(table1.description) 3(table2.type2)
+    SS-JOIN: table1.id=table2.id2
+      SCAN table1 with predicate NULL
+      SCAN table2 with predicate NULL
+uno aone 
+uno one 
+cuatro four 
+cinco five 
+cinco-cinco five 

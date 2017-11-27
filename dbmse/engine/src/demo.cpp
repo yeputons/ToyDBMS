@@ -33,6 +33,7 @@
 #include "puniquenode.h"
 #include "psortnode.h"
 #include "psortedjoinnode.h"
+#include "phashjoinnode.h"
 
 std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
   if (dynamic_cast<LSelectNode*>(node) != nullptr) {
@@ -48,6 +49,11 @@ std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
         node));
     } else if (n->type == LJoinType::SORTED_MERGE) {
       return std::unique_ptr<PSortedJoinNode>(new PSortedJoinNode(
+        QueryFactory(node->GetLeft()),
+        QueryFactory(node->GetRight()),
+        node));
+    } else if (n->type == LJoinType::HASH_JOIN) {
+      return std::unique_ptr<PHashJoinNode>(new PHashJoinNode(
         QueryFactory(node->GetLeft()),
         QueryFactory(node->GetRight()),
         node));
@@ -171,6 +177,21 @@ int main() {
     std::unique_ptr<LProjectNode> n6(new LProjectNode(std::move(n5), {"table2.type2", "table1.description"}));
     std::unique_ptr<LUniqueNode> n7(new LUniqueNode(std::move(n6)));
     std::unique_ptr<PGetNextNode> q1 = QueryFactory(n7.get());
+    q1->Print(0);
+    ExecuteQuery(q1.get());
+  }
+  {
+    std::cout << std::endl << "Query7: same as Query4, but with hash-join" << std::endl;
+    BaseTable bt1 = BaseTable("table1");
+    BaseTable bt2 = BaseTable("table2");
+    std::cout << bt1;
+    std::cout << bt2;
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {Predicate(PT_GREATERTHAN, VT_INT, 2, 30, "")}));
+    std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
+    std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666, LJoinType::HASH_JOIN));
+    std::unique_ptr<LProjectNode> n4(new LProjectNode(std::move(n3), {"table2.type2", "table1.description"}));
+    std::unique_ptr<LUniqueNode> n5(new LUniqueNode(std::move(n4)));
+    std::unique_ptr<PGetNextNode> q1 = QueryFactory(n5.get());
     q1->Print(0);
     ExecuteQuery(q1.get());
   }
