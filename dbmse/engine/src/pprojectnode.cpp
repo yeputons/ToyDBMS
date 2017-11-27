@@ -38,7 +38,7 @@ std::vector<std::vector<Value>> PProjectNode::GetNext() {
         result.push_back(lrow[idx]);
       data.push_back(result);
     }
-    if (data.size() >= BLOCK_SIZE) {
+    if (!data.empty()) {
       break;
     } else {
       lres = l->GetNext();

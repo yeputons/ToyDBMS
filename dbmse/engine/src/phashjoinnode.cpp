@@ -79,7 +79,7 @@ std::vector<std::vector<Value>> PHashJoinNode::GetNext() {
   }
 
   std::vector<std::vector<Value>> result;
-  while (result.size() < BLOCK_SIZE) {
+  while (result.empty()) {
     auto lres = l->GetNext();
     if (lres.empty()) {
       break;

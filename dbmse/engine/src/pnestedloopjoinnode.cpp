@@ -72,7 +72,7 @@ std::vector<std::vector<Value>> PNestedLoopJoinNode::GetNext() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   std::vector<std::vector<Value>> data;
-  while (!lres.empty() && data.size() < BLOCK_SIZE) {
+  while (!lres.empty() && data.empty()) {
     std::vector<std::vector<Value>> rres = r->GetNext();
     if (rres.empty()) {
       lres = l->GetNext();

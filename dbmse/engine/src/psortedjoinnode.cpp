@@ -78,7 +78,7 @@ std::vector<std::vector<Value>> PSortedJoinNode::GetNext() {
   PGetNextNode* r = (PGetNextNode*)right.get();
   std::vector<std::vector<Value>> data;
 
-  while (data.size() < BLOCK_SIZE && li < lres.size()) {
+  while (data.empty() && li < lres.size()) {
     while (!rres.empty()) {
       if (lres[li][lpos] == rres[ri][rpos]) {
         requal.push_back(rres[ri]);

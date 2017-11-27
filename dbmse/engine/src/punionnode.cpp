@@ -39,14 +39,14 @@ std::vector<std::vector<Value>> PUnionNode::GetNext() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   PGetNextNode* r = (PGetNextNode*)right.get();
   std::vector<std::vector<Value>> data;
-  while (data.size() < BLOCK_SIZE) {
+  while (data.empty()) {
     std::vector<std::vector<Value>> lres = l->GetNext();
     if (lres.empty()) {
       break;
     }
     data.insert(data.end(), lres.begin(), lres.end());
   }
-  while (data.size() < BLOCK_SIZE) {
+  while (data.empty()) {
     std::vector<std::vector<Value>> rres = r->GetNext();
     if (rres.empty()) {
       break;

@@ -27,7 +27,7 @@ std::vector<std::vector<Value>> PCrossProductNode::GetNext() {
   if (lres.empty()) {
     return data;
   }
-  while (data.size() < BLOCK_SIZE) {
+  while (data.empty()) {
     const auto &lrow = lres[lptr];
     for (const auto &rrow : rres) {
       std::vector<Value> result = lrow;
