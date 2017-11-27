@@ -218,4 +218,20 @@ int main(int argc, char* argv[]) {
     ExecuteQuery(q1.get());
     q1->Print(0, true);
   }
+  if (argc >= 3 && !strcmp(argv[2], "big")) {
+    std::cout << std::endl << "Query9: with big1/big2 sorted-join and with table1.id" << std::endl;
+    BaseTable bt1 = BaseTable("big1");
+    BaseTable bt2 = BaseTable("big2");
+    std::cout << bt1;
+    std::cout << bt2;
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {}));
+    std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
+    std::unique_ptr<LSortNode> n3(new LSortNode(std::move(n1), "big1.id"));
+    std::unique_ptr<LSortNode> n4(new LSortNode(std::move(n2), "big2.id"));
+    std::unique_ptr<LJoinNode> n5(new LJoinNode(std::move(n3), std::move(n4), "big1.id", "big2.id", 666, LJoinType::SORTED_MERGE));
+    std::unique_ptr<PGetNextNode> q1 = QueryFactory(n5.get());
+    q1->Print(0);
+    ExecuteQuery(q1.get());
+    q1->Print(0, true);
+  }
 }
