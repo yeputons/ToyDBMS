@@ -13,6 +13,8 @@ class PUniqueNode : public PGetNextNode {
     void Print(int indent, bool print_stats) override;
   private:
     std::vector<std::vector<Value>> past;
+    std::vector<std::vector<Value>> lres;
+    int li;
 };
 
 
