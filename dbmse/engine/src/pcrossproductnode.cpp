@@ -23,6 +23,7 @@ void PCrossProductNode::Rewind() {
   lres = l->GetNext();
   rres = r->GetNext();
   lptr = 0;
+  rptr = 0;
 }
 
 std::vector<std::vector<Value>> PCrossProductNode::GetNext() {
@@ -33,25 +34,29 @@ std::vector<std::vector<Value>> PCrossProductNode::GetNext() {
   if (lres.empty()) {
     return data;
   }
-  while (data.empty()) {
+  while (data.size() < BLOCK_SIZE) {
     const auto &lrow = lres[lptr];
-    for (const auto &rrow : rres) {
-      std::vector<Value> result = lrow;
-      result.insert(result.end(), rrow.begin(), rrow.end());
-      stats_.output_rows++;
-      data.push_back(result);
-    }
+    const auto &rrow = rres[rptr];
 
-    rres = r->GetNext();
-    if (rres.empty()) {
-      r->Rewind();
+    std::vector<Value> result = lrow;
+    result.insert(result.end(), rrow.begin(), rrow.end());
+    stats_.output_rows++;
+    data.push_back(result);
+
+    rptr++;
+    if (rptr >= rres.size()) {
       rres = r->GetNext();
-      lptr++;
-      if (lptr == lres.size()) {
-        lptr = 0;
-        lres = l->GetNext();
-        if (lres.empty()) {
-          break;
+      rptr = 0;
+      if (rres.empty()) {
+        r->Rewind();
+        rres = r->GetNext();
+        lptr++;
+        if (lptr == lres.size()) {
+          lptr = 0;
+          lres = l->GetNext();
+          if (lres.empty()) {
+            break;
+          }
         }
       }
     }
