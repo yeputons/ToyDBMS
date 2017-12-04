@@ -32,18 +32,13 @@ std::vector<std::vector<Value>> PProjectNode::GetNext() {
   PGetNextNode* l = (PGetNextNode*)left.get();
   std::vector<std::vector<Value>> data;
   std::vector<std::vector<Value>> lres = l->GetNext();
-  while (!lres.empty()) {
+  if (!lres.empty()) {
     for (const auto &lrow : lres) {
       std::vector<Value> result;
       for (int idx : indices)
         result.push_back(lrow[idx]);
       data.push_back(result);
       stats_.output_rows++;
-    }
-    if (!data.empty()) {
-      break;
-    } else {
-      lres = l->GetNext();
     }
   }
   if (!data.empty()) {
