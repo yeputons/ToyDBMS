@@ -177,4 +177,28 @@ int main(int argc, char* argv[]) {
     ExecuteQuery(q1.get());
     q1->Print(0, true);
   }
+  {
+    std::cout << std::endl << "Query10: plain select with AND of predicates" << std::endl;
+    BaseTable bt1 = BaseTable("table1");
+    std::cout << bt1;
+    LeafPredicate a(PT_GREATERTHAN, 2, 30);
+    LeafPredicate b(PT_GREATERTHAN, 3, 40);
+    AndPredicate c(&a, &b);
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, &c));
+    std::unique_ptr<PGetNextNode> q1 = QueryFactory(n1.get());
+    q1->Print(0);
+    ExecuteQuery(q1.get());
+  }
+  {
+    std::cout << std::endl << "Query11: plain select with OR of predicates" << std::endl;
+    BaseTable bt1 = BaseTable("table1");
+    std::cout << bt1;
+    LeafPredicate a(PT_GREATERTHAN, 2, 30);
+    LeafPredicate b(PT_GREATERTHAN, 3, 40);
+    OrPredicate c(&a, &b);
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, &c));
+    std::unique_ptr<PGetNextNode> q1 = QueryFactory(n1.get());
+    q1->Print(0);
+    ExecuteQuery(q1.get());
+  }
 }

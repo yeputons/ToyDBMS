@@ -209,3 +209,26 @@ UNION:
   {rewound=0,output_blocks=2,non_empty_output_blocks=1,output_rows=8}
     SCAN table1 with predicate true
     {rewound=0,output_blocks=3,non_empty_output_blocks=1,output_rows=8}
+
+Query10: plain select with AND of predicates
+located in table1 having 4 following attributes:
+0. id INT ASCENDING
+1. description STR UNKNOWN
+2. frequency INT UNKNOWN
+3. groups INT UNKNOWN
+SCAN table1 with predicate (x >= 30) && (x >= 40)
+4 cuatro 33 41 
+
+Query11: plain select with OR of predicates
+located in table1 having 4 following attributes:
+0. id INT ASCENDING
+1. description STR UNKNOWN
+2. frequency INT UNKNOWN
+3. groups INT UNKNOWN
+SCAN table1 with predicate x >= 30 || x >= 40
+0 cero 100 4 
+1 uno 55 1 
+4 cuatro 33 41 
+5 cinco 56 12 
+5 cinco 57 12 
+5 cinco-cinco 58 12 

@@ -174,6 +174,41 @@ struct TruePredicate : public Predicate {
   }
 };
 
+
+struct AndPredicate : public Predicate {
+  Predicate *left, *right;
+  AndPredicate(Predicate *left, Predicate *right) {
+    this->left = left;
+    this->right = right;
+  }
+  bool check(const std::vector<Value> &v) const override {
+    return left->check(v) && right->check(v);
+  }
+  void print(std::ostream &os) const override {
+    os << "(";
+    left->print(os);
+    os << ") && (";
+    right->print(os);
+    os << ")";
+  }
+};
+
+struct OrPredicate : public Predicate {
+  Predicate *left, *right;
+  OrPredicate(Predicate *left, Predicate *right) {
+    this->left = left;
+    this->right = right;
+  }
+  bool check(const std::vector<Value> &v) const override {
+    return left->check(v) || right->check(v);
+  }
+  void print(std::ostream &os) const override {
+    left->print(os);
+    os << " || ";
+    right->print(os);
+  }
+};
+
 inline std::ostream& operator<<(std::ostream& stream, const Predicate& p) {
   p.print(stream);
   return stream;
