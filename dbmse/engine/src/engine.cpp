@@ -3,6 +3,7 @@
 #include "pnestedloopjoinnode.h"
 #include "psortedjoinnode.h"
 #include "phashjoinnode.h"
+#include "pdehashjoinnode.h"
 #include "pcrossproductnode.h"
 #include "pprojectnode.h"
 #include "puniquenode.h"
@@ -27,6 +28,11 @@ std::unique_ptr<PGetNextNode> QueryFactory(LAbstractNode* node) {
         node));
     } else if (n->type == LJoinType::HASH_JOIN) {
       return std::unique_ptr<PHashJoinNode>(new PHashJoinNode(
+        QueryFactory(node->GetLeft()),
+        QueryFactory(node->GetRight()),
+        node));
+    } else if (n->type == LJoinType::DE_HASH_JOIN) {
+      return std::unique_ptr<PDEHashJoinNode>(new PDEHashJoinNode(
         QueryFactory(node->GetLeft()),
         QueryFactory(node->GetRight()),
         node));

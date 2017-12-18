@@ -51,7 +51,7 @@ class LCrossProductNode : public LAbstractNode {
     LCrossProductNode(std::unique_ptr<LAbstractNode> left, std::unique_ptr<LAbstractNode> right);
 };
 
-enum class LJoinType { NESTED_LOOP, SORTED_MERGE, HASH_JOIN };
+enum class LJoinType { NESTED_LOOP, SORTED_MERGE, HASH_JOIN, DE_HASH_JOIN };
 
 class LJoinNode : public LAbstractNode {
   public:

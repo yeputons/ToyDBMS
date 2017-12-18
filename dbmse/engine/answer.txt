@@ -232,3 +232,23 @@ SCAN table1 with predicate x >= 30 || x >= 40
 5 cinco 56 12 
 5 cinco 57 12 
 5 cinco-cinco 58 12 
+
+Query12: same as Query4, but with double-ended-hash-join
+located in table1 having 4 following attributes:
+0. id INT ASCENDING
+1. description STR UNKNOWN
+2. frequency INT UNKNOWN
+3. groups INT UNKNOWN
+located in table2 having 2 following attributes:
+0. id2 INT DESCENDING
+1. type2 STR UNKNOWN
+UNIQUE:
+  PROJECT: 0(table1.description) 3(table2.type2)
+    DH-JOIN: table1.id=table2.id2
+      SCAN table1 with predicate x >= 30
+      SCAN table2 with predicate true
+cuatro four 
+cinco five 
+uno one 
+cinco-cinco five 
+uno aone 

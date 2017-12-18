@@ -201,4 +201,20 @@ int main(int argc, char* argv[]) {
     q1->Print(0);
     ExecuteQuery(q1.get());
   }
+  {
+    std::cout << std::endl << "Query12: same as Query4, but with double-ended-hash-join" << std::endl;
+    BaseTable bt1 = BaseTable("table1");
+    BaseTable bt2 = BaseTable("table2");
+    std::cout << bt1;
+    std::cout << bt2;
+    LeafPredicate p(PT_GREATERTHAN, 2, Value(30));
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, &p));
+    std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, &TruePredicate::INSTANCE));
+    std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666, LJoinType::DE_HASH_JOIN));
+    std::unique_ptr<LProjectNode> n4(new LProjectNode(std::move(n3), {"table2.type2", "table1.description"}));
+    std::unique_ptr<LUniqueNode> n5(new LUniqueNode(std::move(n4)));
+    std::unique_ptr<PGetNextNode> q1 = QueryFactory(n5.get());
+    q1->Print(0);
+    ExecuteQuery(q1.get());
+  }
 }
