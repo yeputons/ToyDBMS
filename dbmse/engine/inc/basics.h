@@ -78,6 +78,9 @@ struct Value {
     assert(false);
     return false;
   }
+  bool operator!=(const Value &rhs) const {
+    return !(*this == rhs);
+  }
   bool operator<(const Value &rhs) const {
     if (vtype != rhs.vtype) return vtype < rhs.vtype;
     if (vtype == VT_INT) return vint < rhs.vint;
@@ -87,6 +90,12 @@ struct Value {
   }
   bool operator>=(const Value &rhs) const {
     return !(*this < rhs);
+  }
+  bool operator>(const Value &rhs) const {
+    return rhs < *this;
+  }
+  bool operator<=(const Value &rhs) const {
+    return !(rhs < *this);
   }
 };
 
