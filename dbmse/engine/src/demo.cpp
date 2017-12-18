@@ -17,7 +17,6 @@
 //      3) contract contains print methods for physical and logical nodes
 // 0.2: first public release
 
-#include <stdio.h>
 #include <typeinfo>
 #include <iostream>
 #include <memory>
@@ -39,7 +38,7 @@ void ExecuteQuery(PGetNextNode* query) {
         else if (vals[i].vtype == VT_STRING)
           std::cout << vals[i].vstr << " ";
       }
-      printf("\n");
+      std::cout << "\n";
     }
     res = query->GetNext();
   }
