@@ -85,6 +85,9 @@ struct Value {
     assert(false);
     return false;
   }
+  bool operator>=(const Value &rhs) const {
+    return !(*this < rhs);
+  }
 };
 
 namespace std {
@@ -111,57 +114,39 @@ enum PredicateType {
 
 struct Predicate {
   PredicateType ptype;
-  ValueType vtype;
   int attribute;
-  int vint;
-  std::string vstr;
-  Predicate(PredicateType ptype, ValueType vtype, int attribute, int vint, std::string vstr) {
+  Value rhs;
+  Predicate() {}
+  Predicate(PredicateType ptype, int attribute, Value rhs) {
     this->ptype = ptype;
-    this->vtype = vtype;
     this->attribute = attribute;
-    this->vint = vint;
-    this->vstr = vstr;
-  }
-  Predicate(const Predicate& p) {
-    this->ptype = p.ptype;
-    this->vtype = p.vtype;
-    this->attribute = p.attribute;
-    this->vint = p.vint;
-    this->vstr = p.vstr;
+    this->rhs = rhs;
   }
   bool check(const Value &v) {
-    assert(vtype == v.vtype);
+    assert(v.vtype == rhs.vtype);
     if (ptype == PT_EQUALS) {
-      if (vtype == VT_INT) return v.vint == vint;
-      if (vtype == VT_STRING) return v.vstr == vstr;
+      return v == rhs;
     } else if (ptype == PT_GREATERTHAN) {
-      if (vtype == VT_INT) return v.vint >= vint;
-      if (vtype == VT_STRING) return v.vstr >= vstr;
+      return v >= rhs;
     }
     assert(false);
     return false;
   }
-  Predicate() {}
-  ~Predicate() {}
 };
+
+inline std::ostream& operator<<(std::ostream& stream, const Value& v) {
+  if (v.vtype == VT_INT) return stream << v.vint;
+  if (v.vtype == VT_STRING) return stream << '"' << v.vstr << '"';
+  assert(false);
+  return stream;
+}
 
 inline std::ostream& operator<<(std::ostream& stream, const Predicate& p) {
   if (p.ptype == PT_EQUALS)
     stream << "x == ";
   else
     stream << "x < ";
-
-  if (p.vtype == VT_INT)
-    stream << p.vint;
-  else
-    stream << p.vstr;
-  return stream;
-}
-
-inline std::ostream& operator<<(std::ostream& stream, const Value& v) {
-  if (v.vtype == VT_INT) return stream << v.vint;
-  if (v.vtype == VT_STRING) return stream << '"' << v.vstr << '"';
-  assert(false);
+  stream << p.rhs;
   return stream;
 }
 

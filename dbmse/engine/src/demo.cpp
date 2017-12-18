@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
     BaseTable bt2 = BaseTable("table2");
     std::cout << bt1;
     std::cout << bt2;
-    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {Predicate(PT_GREATERTHAN, VT_INT, 2, 30, "")}));
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {Predicate(PT_GREATERTHAN, 2, Value(30))}));
     std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
     std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666, LJoinType::NESTED_LOOP));
     std::unique_ptr<LProjectNode> n4(new LProjectNode(std::move(n3), {"table2.type2", "table1.description"}));
@@ -119,7 +119,7 @@ int main(int argc, char* argv[]) {
     BaseTable bt2 = BaseTable("table2");
     std::cout << bt1;
     std::cout << bt2;
-    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {Predicate(PT_GREATERTHAN, VT_INT, 2, 30, "")}));
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {Predicate(PT_GREATERTHAN, 2, Value(30))}));
     std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
     std::unique_ptr<LSortNode> n3(new LSortNode(std::move(n1), "table1.id"));
     std::unique_ptr<LSortNode> n4(new LSortNode(std::move(n2), "table2.id2"));
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]) {
     BaseTable bt2 = BaseTable("table2");
     std::cout << bt1;
     std::cout << bt2;
-    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {Predicate(PT_GREATERTHAN, VT_INT, 2, 30, "")}));
+    std::unique_ptr<LAbstractNode> n1(new LSelectNode(bt1, {Predicate(PT_GREATERTHAN, 2, Value(30))}));
     std::unique_ptr<LAbstractNode> n2(new LSelectNode(bt2, {}));
     std::unique_ptr<LJoinNode> n3(new LJoinNode(std::move(n1), std::move(n2), "table1.id", "table2.id2", 666, LJoinType::HASH_JOIN));
     std::unique_ptr<LProjectNode> n4(new LProjectNode(std::move(n3), {"table2.type2", "table1.description"}));
