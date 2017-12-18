@@ -27,7 +27,7 @@
 class PSelectNode : public PGetNextNode {
   public:
     PSelectNode();
-    PSelectNode(LAbstractNode* p, std::vector<Predicate> predicates);
+    PSelectNode(LAbstractNode* p);
     void Rewind() override;
     std::vector<std::vector<Value>> GetNext() override;
     // print node
@@ -35,7 +35,6 @@ class PSelectNode : public PGetNextNode {
   private:
     std::ifstream f;
     BaseTable table;
-    std::vector<Predicate> predicate;
 };
 
 #endif // PSELECTNODE_H

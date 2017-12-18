@@ -5,7 +5,7 @@ located in table1 having 4 following attributes:
 1. description STR UNKNOWN
 2. frequency INT UNKNOWN
 3. groups INT UNKNOWN
-SCAN table1 with predicate NULL
+SCAN table1 with predicate true
 0 cero 100 4 
 1 uno 55 1 
 2 dos 25 2 
@@ -25,8 +25,8 @@ located in table2 having 2 following attributes:
 0. id2 INT DESCENDING
 1. type2 STR UNKNOWN
 NL-JOIN: table1.id=table2.id2
-  SCAN table1 with predicate NULL
-  SCAN table2 with predicate NULL
+  SCAN table1 with predicate true
+  SCAN table2 with predicate true
 uno 55 1 one 1 
 uno 55 1 aone 1 
 dos 25 2 two 2 
@@ -46,8 +46,8 @@ located in table2 having 2 following attributes:
 0. id2 INT DESCENDING
 1. type2 STR UNKNOWN
 CROSS-PRODUCT: 
-  SCAN table1 with predicate NULL
-  SCAN table2 with predicate NULL
+  SCAN table1 with predicate true
+  SCAN table2 with predicate true
 0 cero 100 4 5 five 
 0 cero 100 4 4 four 
 0 cero 100 4 3 three 
@@ -109,8 +109,8 @@ located in table2 having 2 following attributes:
 UNIQUE:
   PROJECT: 0(table1.description) 3(table2.type2)
     NL-JOIN: table1.id=table2.id2
-      SCAN table1 with predicate NULL
-      SCAN table2 with predicate NULL
+      SCAN table1 with predicate x < 30
+      SCAN table2 with predicate true
 uno one 
 uno aone 
 cuatro four 
@@ -122,8 +122,8 @@ SORT:1 (table2.type2)
   UNIQUE:
     PROJECT: 0(table1.description) 3(table2.type2)
       NL-JOIN: table1.id=table2.id2
-        SCAN table1 with predicate NULL
-        SCAN table2 with predicate NULL
+        SCAN table1 with predicate x < 30
+        SCAN table2 with predicate true
 uno aone 
 cinco five 
 cinco-cinco five 
@@ -143,9 +143,9 @@ UNIQUE:
   PROJECT: 0(table1.description) 3(table2.type2) 4(table1.id)
     SS-JOIN: table1.id=table2.id2
       SORT:0 (table1.id)
-        SCAN table1 with predicate NULL
+        SCAN table1 with predicate x < 30
       SORT:0 (table2.id2)
-        SCAN table2 with predicate NULL
+        SCAN table2 with predicate true
 uno one 1 
 uno aone 1 
 cuatro four 4 
@@ -164,8 +164,8 @@ located in table2 having 2 following attributes:
 UNIQUE:
   PROJECT: 0(table1.description) 3(table2.type2)
     HS-JOIN: table1.id=table2.id2
-      SCAN table1 with predicate NULL
-      SCAN table2 with predicate NULL
+      SCAN table1 with predicate x < 30
+      SCAN table2 with predicate true
 uno aone 
 uno one 
 cuatro four 
@@ -180,9 +180,9 @@ located in table1 having 4 following attributes:
 3. groups INT UNKNOWN
 UNION:
   SORT:1 (table1.description)
-    SCAN table1 with predicate NULL
+    SCAN table1 with predicate true
   SORT:2 (table1.frequency)
-    SCAN table1 with predicate NULL
+    SCAN table1 with predicate true
 0 cero 100 4 
 5 cinco 56 12 
 5 cinco 57 12 
@@ -203,9 +203,9 @@ UNION:
 {rewound=0,output_blocks=3,non_empty_output_blocks=2,output_rows=16}
   SORT:1 (table1.description)
   {rewound=0,output_blocks=3,non_empty_output_blocks=1,output_rows=8}
-    SCAN table1 with predicate NULL
+    SCAN table1 with predicate true
     {rewound=0,output_blocks=4,non_empty_output_blocks=1,output_rows=8}
   SORT:2 (table1.frequency)
   {rewound=0,output_blocks=2,non_empty_output_blocks=1,output_rows=8}
-    SCAN table1 with predicate NULL
+    SCAN table1 with predicate true
     {rewound=0,output_blocks=3,non_empty_output_blocks=1,output_rows=8}

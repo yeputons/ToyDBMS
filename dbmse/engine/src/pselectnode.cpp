@@ -29,9 +29,8 @@
 
 PSelectNode::PSelectNode() {}
 
-PSelectNode::PSelectNode(LAbstractNode* p, std::vector<Predicate> predicate): PGetNextNode() {
+PSelectNode::PSelectNode(LAbstractNode* p): PGetNextNode() {
   this->table = ((LSelectNode*)p)->GetBaseTable();
-  this->predicate = predicate;
   this->prototype = p;
   stats_.rewound--;
   Rewind();
@@ -76,16 +75,7 @@ std::vector<std::vector<Value>> PSelectNode::GetNext() {
       tmp.push_back(h);
       i++;
     }
-    p->ResetIterator();
-    bool to_select = true;
-    for (;;) {
-      int stop;
-      Predicate pred;
-      std::tie(stop, pred) = p->GetNextPredicate();
-      if (stop) break;
-      to_select &= pred.check(tmp[pred.attribute]);
-    }
-    if (to_select) {
+    if (p->predicate->check(tmp)) {
       stats_.output_rows++;
       result.push_back(tmp);
     }
@@ -100,11 +90,8 @@ void PSelectNode::Print(int indent, bool print_stats) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
-  std::cout << "SCAN " << table.relpath << " with predicate ";
-  if (predicate.size() != 0)
-    std::cout << predicate[0];
-  else
-    std::cout << "NULL" << std::endl;
+  LSelectNode* p = (LSelectNode*)prototype;
+  std::cout << "SCAN " << table.relpath << " with predicate " << *p->predicate << "\n";
   if (print_stats) {
     for (int i = 0; i < indent; i++) std::cout << " ";
     std::cout << stats() << std::endl;

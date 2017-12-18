@@ -80,16 +80,12 @@ class LProjectNode : public LAbstractNode {
 
 class LSelectNode : public LAbstractNode {
   public:
-    LSelectNode(BaseTable& table, std::vector<Predicate> predicates);
+    LSelectNode(BaseTable& table, const Predicate *predicate);
     // returns a reference to BaseTable
     BaseTable& GetBaseTable();
-    // returns end status and next predicate (if exists)
-    std::tuple<int, Predicate> GetNextPredicate();
-    // resets predicate iterator
-    void ResetIterator();
+
+    const Predicate *predicate;
   private:
-    int iteratorpos;
-    std::vector<Predicate> predicates;
     BaseTable table;
 };
 

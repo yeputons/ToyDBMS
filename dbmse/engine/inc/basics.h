@@ -116,33 +116,6 @@ namespace std {
   };
 }
 
-enum PredicateType {
-  PT_EQUALS,
-  PT_GREATERTHAN,
-};
-
-struct Predicate {
-  PredicateType ptype;
-  int attribute;
-  Value rhs;
-  Predicate() {}
-  Predicate(PredicateType ptype, int attribute, Value rhs) {
-    this->ptype = ptype;
-    this->attribute = attribute;
-    this->rhs = rhs;
-  }
-  bool check(const Value &v) {
-    assert(v.vtype == rhs.vtype);
-    if (ptype == PT_EQUALS) {
-      return v == rhs;
-    } else if (ptype == PT_GREATERTHAN) {
-      return v >= rhs;
-    }
-    assert(false);
-    return false;
-  }
-};
-
 inline std::ostream& operator<<(std::ostream& stream, const Value& v) {
   if (v.vtype == VT_INT) return stream << v.vint;
   if (v.vtype == VT_STRING) return stream << '"' << v.vstr << '"';
@@ -150,12 +123,57 @@ inline std::ostream& operator<<(std::ostream& stream, const Value& v) {
   return stream;
 }
 
+enum PredicateType {
+  PT_EQUALS,
+  PT_GREATERTHAN,
+};
+
+struct Predicate {
+  virtual bool check(const std::vector<Value> &v) const = 0;
+  virtual void print(std::ostream &os) const = 0;
+};
+
+struct LeafPredicate : public Predicate {
+  PredicateType ptype;
+  int attribute;
+  Value rhs;
+  LeafPredicate() {}
+  LeafPredicate(PredicateType ptype, int attribute, Value rhs) {
+    this->ptype = ptype;
+    this->attribute = attribute;
+    this->rhs = rhs;
+  }
+  bool check(const std::vector<Value> &v) const override {
+    assert(v.at(attribute).vtype == rhs.vtype);
+    if (ptype == PT_EQUALS) {
+      return v.at(attribute) == rhs;
+    } else if (ptype == PT_GREATERTHAN) {
+      return v.at(attribute) >= rhs;
+    }
+    assert(false);
+    return false;
+  }
+  void print(std::ostream &os) const override {
+    if (ptype == PT_EQUALS)
+      os << "x == ";
+    else
+      os << "x < ";
+    os << rhs;
+  }
+};
+
+struct TruePredicate : public Predicate {
+  static const TruePredicate INSTANCE;
+  bool check(const std::vector<Value>&) const override {
+    return true;
+  }
+  void print(std::ostream &os) const override {
+    os << "true";
+  }
+};
+
 inline std::ostream& operator<<(std::ostream& stream, const Predicate& p) {
-  if (p.ptype == PT_EQUALS)
-    stream << "x == ";
-  else
-    stream << "x < ";
-  stream << p.rhs;
+  p.print(stream);
   return stream;
 }
 

@@ -145,10 +145,9 @@ LProjectNode::LProjectNode(std::unique_ptr<LAbstractNode> child_, std::vector<st
 }
 
 LSelectNode::LSelectNode(BaseTable& table,
-                         std::vector<Predicate> predicates): LAbstractNode(nullptr, nullptr) {
+                         const Predicate *predicate): LAbstractNode(nullptr, nullptr) {
   this->table = table;
-  this->predicates = predicates;
-  iteratorpos = 0;
+  this->predicate = predicate;
   for (int i = 0; i < table.nbAttr; i++) {
     std::string tmp = table.relpath + "." + table.vnames[i];
     std::vector<std::string> tmp2;
@@ -162,18 +161,6 @@ LSelectNode::LSelectNode(BaseTable& table,
 BaseTable& LSelectNode::GetBaseTable() {
   return table;
 }
-
-std::tuple<int, Predicate> LSelectNode::GetNextPredicate() {
-  if (predicates.size() == 0 || iteratorpos >= predicates.size()) {
-    return std::make_tuple(1, Predicate());
-  }
-  return std::make_tuple(0, predicates[iteratorpos++]);
-}
-
-void LSelectNode::ResetIterator() {
-  iteratorpos = 0;
-}
-
 
 LUniqueNode::LUniqueNode(std::unique_ptr<LAbstractNode> child_): LAbstractNode(std::move(child_), nullptr) {
   fieldNames = left->fieldNames;
