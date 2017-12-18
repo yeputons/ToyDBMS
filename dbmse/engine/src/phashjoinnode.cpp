@@ -112,7 +112,7 @@ void PHashJoinNode::Print(int indent, bool print_stats) {
   for (int i = 0; i < indent; i++) {
     std::cout << " ";
   }
-  std::cout << "SS-JOIN: " << ((LJoinNode*)prototype)->offset1 << "=" << ((LJoinNode*)prototype)->offset2 << std::endl;
+  std::cout << "HS-JOIN: " << ((LJoinNode*)prototype)->offset1 << "=" << ((LJoinNode*)prototype)->offset2 << std::endl;
   if (print_stats) {
     for (int i = 0; i < indent; i++) std::cout << " ";
     std::cout << stats() << std::endl;

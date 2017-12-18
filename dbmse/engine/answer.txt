@@ -163,7 +163,7 @@ located in table2 having 2 following attributes:
 1. type2 STR UNKNOWN
 UNIQUE:
   PROJECT: 0(table1.description) 3(table2.type2)
-    SS-JOIN: table1.id=table2.id2
+    HS-JOIN: table1.id=table2.id2
       SCAN table1 with predicate NULL
       SCAN table2 with predicate NULL
 uno aone 
