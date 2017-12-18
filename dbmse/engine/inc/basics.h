@@ -156,8 +156,10 @@ struct LeafPredicate : public Predicate {
   void print(std::ostream &os) const override {
     if (ptype == PT_EQUALS)
       os << "x == ";
+    else if (ptype == PT_GREATERTHAN)
+      os << "x >= ";
     else
-      os << "x < ";
+      assert(false);
     os << rhs;
   }
 };
