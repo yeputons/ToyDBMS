@@ -69,8 +69,10 @@ std::vector<std::vector<Value>> PSelectNode::GetNext() {
       Value h;
       if (prototype->fieldTypes[i] == VT_INT)
         h = Value(std::stoi(word));
-      else
+      else if (prototype->fieldTypes[i] == VT_STRING)
         h = Value(word);
+      else
+        assert(false);
       tmp.push_back(h);
       i++;
     }

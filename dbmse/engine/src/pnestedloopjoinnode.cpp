@@ -83,14 +83,7 @@ std::vector<std::vector<Value>> PNestedLoopJoinNode::GetNext() {
     }
     for (int i = 0; i < lres.size(); i++)
     for (int j = 0; j < rres.size(); j++) {
-      bool join = false;
-      if (vt == VT_INT) {
-        if ((int)lres[i][lpos] == (int)rres[j][rpos]) join = true;
-      } else {
-        if ((std::string)lres[i][lpos] == (std::string)rres[j][rpos]) join = true;
-      }
-
-      if (join != true) continue;
+      if (lres[i][lpos] != rres[j][rpos]) continue;
 
       std::vector<Value> tmp;
       for (int k = 0; k < lres[i].size(); k++) {
